@@ -1,0 +1,13 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 6
+    paths:
+        - app
+        - database
+        - tests
+    excludePaths:
+        - app/Filament/**/Pages/*
+    checkModelProperties: false
+    noEnvCallsOutsideOfConfig: true
