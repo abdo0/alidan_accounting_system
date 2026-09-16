@@ -1,0 +1,80 @@
+code,name_en,name_ar,parent_code,account_class,account_subtype,normal_balance,statement,cash_flow_class,is_postable,is_control_account,control_subledger,requires_cost_centre,is_reconcilable
+1,Assets,الأصول,,asset,,D,BS,,0,0,,0,0
+11,Current Assets,الأصول المتداولة,1,asset,,D,BS,,0,0,,0,0
+14,Non-current Assets,الأصول غير المتداولة,1,asset,,D,BS,,0,0,,0,0
+2,Liabilities,الالتزامات,,liability,,C,BS,,0,0,,0,0
+3,Equity,حقوق الملكية,,equity,,C,BS,,0,0,,0,0
+4,Revenue,الإيرادات,,revenue,,C,PL,,0,0,,0,0
+5,Cost of Sales,تكلفة المبيعات,,cost_of_sales,,D,PL,,0,0,,0,0
+6,Operating Expenses,المصروفات التشغيلية,,expense,,D,PL,,0,0,,0,0
+8,Other Income and Expense,إيرادات ومصروفات أخرى,,other_expense,,D,PL,,0,0,,0,0
+9,Tax and Clearing,الضرائب والحسابات الوسيطة,,clearing,,D,BS,,0,0,,0,0
+1000,Cash on Hand,النقدية في الصندوق,11,asset,cash,D,BS,operating,1,0,,0,1
+1010,Petty Cash,المصروفات النثرية,11,asset,cash,D,BS,operating,1,0,,0,1
+1100,Cash at Bank,النقدية لدى البنوك,11,asset,bank,D,BS,operating,1,0,,0,1
+1200,Trade Receivables,الذمم المدينة التجارية,11,asset,receivable,D,BS,operating,1,1,receivables,0,0
+1250,Allowance for Doubtful Debts,مخصص الديون المشكوك فيها,11,asset,receivable,C,BS,operating,1,0,,0,0
+1300,Inventory,المخزون,11,asset,inventory,D,BS,operating,1,1,inventory,0,0
+1350,Prepaid Expenses,المصروفات المدفوعة مقدما,11,asset,prepayment,D,BS,operating,1,0,,0,0
+1360,Accrued Revenue,الإيرادات المستحقة,11,asset,accrued_revenue,D,BS,operating,1,0,,0,0
+1400,Land and Buildings,الأراضي والمباني,14,asset,fixed_asset,D,BS,investing,1,1,fixed_assets,0,0
+1410,Motor Vehicles,وسائل النقل,14,asset,fixed_asset,D,BS,investing,1,1,fixed_assets,0,0
+1420,Furniture and Fittings,الأثاث والتجهيزات,14,asset,fixed_asset,D,BS,investing,1,1,fixed_assets,0,0
+1430,Office Equipment,المعدات المكتبية,14,asset,fixed_asset,D,BS,investing,1,1,fixed_assets,0,0
+1800,Accumulated Depreciation - Buildings,مجمع إهلاك المباني,14,asset,accum_depreciation,C,BS,investing,1,0,,0,0
+1810,Accumulated Depreciation - Vehicles,مجمع إهلاك وسائل النقل,14,asset,accum_depreciation,C,BS,investing,1,0,,0,0
+1820,Accumulated Depreciation - Furniture,مجمع إهلاك الأثاث,14,asset,accum_depreciation,C,BS,investing,1,0,,0,0
+1830,Accumulated Depreciation - Equipment,مجمع إهلاك المعدات,14,asset,accum_depreciation,C,BS,investing,1,0,,0,0
+2000,Trade Payables,الذمم الدائنة التجارية,2,liability,payable,C,BS,operating,1,1,payables,0,0
+2150,Goods Received Not Invoiced,بضاعة مستلمة غير مفوترة,2,liability,clearing,C,BS,operating,1,0,,0,0
+2200,Accrued Expenses,المصروفات المستحقة,2,liability,accrual,C,BS,operating,1,0,,0,0
+2300,Sales Tax Payable,ضريبة المبيعات المستحقة,2,liability,tax,C,BS,operating,1,0,,0,0
+2310,Recoverable Tax,الضريبة القابلة للاسترداد,2,liability,tax,D,BS,operating,1,0,,0,0
+2320,Withholding Tax Payable,ضريبة الاستقطاع المستحقة,2,liability,tax,C,BS,operating,1,0,,0,0
+2350,Customer Deposits,أمانات العملاء,2,liability,customer_deposit,C,BS,operating,1,0,,0,0
+2400,Net Pay Payable,صافي الرواتب المستحقة,2,liability,payroll,C,BS,operating,1,0,,0,0
+2410,Social Security Payable,الضمان الاجتماعي المستحق,2,liability,payroll,C,BS,operating,1,0,,0,0
+2420,Employee Income Tax Withheld,ضريبة دخل الموظفين المستقطعة,2,liability,payroll,C,BS,operating,1,0,,0,0
+2500,Long-term Loans,القروض طويلة الأجل,2,liability,loan,C,BS,financing,1,0,,0,0
+2600,Unearned Revenue,الإيرادات غير المكتسبة,2,liability,deferred_revenue,C,BS,operating,1,0,,0,0
+3000,Capital,رأس المال,3,equity,capital,C,BS,financing,1,0,,0,0
+3200,Retained Earnings,الأرباح المحتجزة,3,equity,retained_earnings,C,BS,financing,1,0,,0,0
+3400,Drawings,المسحوبات,3,equity,drawings,D,SOCE,financing,1,0,,0,0
+3900,Current Year Earnings,أرباح السنة الحالية,3,equity,current_earnings,C,BS,financing,1,0,,0,0
+4000,Sales Revenue,إيرادات المبيعات,4,revenue,,C,PL,operating,1,0,,1,0
+4100,Service Revenue,إيرادات الخدمات,4,revenue,,C,PL,operating,1,0,,1,0
+4500,Returns Inwards,مردودات المبيعات,4,revenue,,D,PL,operating,1,0,,1,0
+4600,Discounts Received,الخصم المكتسب,4,revenue,,C,PL,operating,1,0,,1,0
+4700,Other Income,إيرادات أخرى,8,other_income,,C,PL,operating,1,0,,0,0
+5000,Purchases,المشتريات,5,cost_of_sales,,D,PL,operating,1,0,,1,0
+5100,Cost of Goods Sold,تكلفة البضاعة المباعة,5,cost_of_sales,,D,PL,operating,1,0,,1,0
+5300,Returns Outwards,مردودات المشتريات,5,cost_of_sales,,C,PL,operating,1,0,,1,0
+5400,Inventory Adjustment,تسوية المخزون,5,cost_of_sales,,D,PL,operating,1,0,,1,0
+5450,Internally Used Items,البضاعة المستخدمة داخليا,5,cost_of_sales,,D,PL,operating,1,0,,1,0
+5600,Carriage Inwards,مصاريف النقل للداخل,5,cost_of_sales,,D,PL,operating,1,0,,1,0
+6000,Wages and Salaries,الأجور والرواتب,6,expense,,D,PL,operating,1,0,,1,0
+6100,Employer Social Security,حصة صاحب العمل بالضمان,6,expense,,D,PL,operating,1,0,,1,0
+6200,Staff Benefits,مزايا الموظفين,6,expense,,D,PL,operating,1,0,,1,0
+6500,Rent,الإيجار,6,expense,,D,PL,operating,1,0,,1,0
+6520,Telephone and Internet,الهاتف والإنترنت,6,expense,,D,PL,operating,1,0,,1,0
+6530,Utilities,الخدمات والمرافق,6,expense,,D,PL,operating,1,0,,1,0
+6600,Repairs and Maintenance,الصيانة والإصلاح,6,expense,,D,PL,operating,1,0,,1,0
+7000,Stationery and Printing,القرطاسية والطباعة,6,expense,,D,PL,operating,1,0,,1,0
+7100,Professional Fees,الأتعاب المهنية,6,expense,,D,PL,operating,1,0,,1,0
+7200,Insurance,التأمين,6,expense,,D,PL,operating,1,0,,1,0
+7300,Travel and Transport,السفر والنقل,6,expense,,D,PL,operating,1,0,,1,0
+7400,Advertising and Marketing,الدعاية والتسويق,6,expense,,D,PL,operating,1,0,,1,0
+7450,Discounts Allowed,الخصم الممنوح,6,expense,,D,PL,operating,1,0,,1,0
+7500,Carriage Outwards,مصاريف النقل للخارج,6,expense,,D,PL,operating,1,0,,1,0
+7600,Depreciation Expense,مصروف الإهلاك,6,expense,,D,PL,operating,1,0,,1,0
+7800,Irrecoverable Debts,الديون المعدومة,6,expense,,D,PL,operating,1,0,,1,0
+7810,Doubtful Debt Expense,مصروف الديون المشكوك فيها,6,expense,,D,PL,operating,1,0,,1,0
+7900,Allocated Overhead,التكاليف غير المباشرة الموزعة,6,expense,,D,PL,operating,1,0,,1,0
+7910,Overhead Recharged Out,التكاليف المعاد تحميلها,6,expense,,C,PL,operating,1,0,,1,0
+8000,Interest Expense,مصروف الفوائد,8,other_expense,,D,PL,financing,1,0,,0,0
+8700,Gain on Asset Disposal,أرباح بيع الأصول,8,other_income,,C,PL,investing,1,0,,0,0
+8750,Loss on Asset Disposal,خسائر بيع الأصول,8,other_expense,,D,PL,investing,1,0,,0,0
+9000,Income Tax Expense,مصروف ضريبة الدخل,9,tax,,D,PL,operating,1,0,,0,0
+9500,Suspense,حساب معلق,9,clearing,suspense,D,BS,none,1,0,,0,1
+9510,Rounding,فروقات التقريب,9,clearing,rounding,D,BS,none,1,0,,0,0
+9520,Payroll Clearing,حساب الرواتب الوسيط,9,clearing,clearing,D,BS,none,1,0,,0,0
