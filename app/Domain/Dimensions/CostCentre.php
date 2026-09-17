@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Dimensions;
 
+use App\Domain\Ledger\Account;
 use App\Domain\Organisation\Entity;
 use App\Domain\Shared\Concerns\HasTranslatableName;
 use App\Models\User;
@@ -24,6 +25,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $cost_centre_type
  * @property string|null $department
  * @property string|null $branch
+ * @property int|null $control_class
+ * @property string|null $responsibility_unit
  * @property string|null $reporting_group
  * @property string|null $path
  * @property int $depth
@@ -37,19 +40,34 @@ class CostCentre extends Model
 {
     use HasTranslatableName;
 
-    public const OPERATING = 'operating';
+    /**
+     * The UAS fixes the taxonomy and reserves chart classes 5-9 for it. Each type maps
+     * to exactly one control class, which is what makes the composite statutory code
+     * (<control class><use element>, e.g. ٥٣١) derivable.
+     */
+    public const PRODUCTION = 'production';         // مراكز الإنتاج -> 5
 
-    public const SUPPORT = 'support';
+    public const PROD_SERVICE = 'prod_service';     // مراكز الخدمات الإنتاجية -> 6
 
-    public const PROJECT = 'project';
+    public const MARKETING = 'marketing';           // مراكز الخدمات التسويقية -> 7
 
-    public const ADMIN = 'admin';
+    public const ADMIN = 'admin';                   // مراكز الخدمات الإدارية -> 8
 
-    public const STATISTICAL = 'statistical';
+    public const CAPITAL = 'capital';               // مراكز العمليات الرأسمالية -> 9
+
+    /** @var array<string, int> */
+    public const CONTROL_CLASSES = [
+        self::PRODUCTION => 5,
+        self::PROD_SERVICE => 6,
+        self::MARKETING => 7,
+        self::ADMIN => 8,
+        self::CAPITAL => 9,
+    ];
 
     protected $fillable = [
         'entity_id', 'parent_id', 'code', 'name', 'name_ar', 'cost_centre_type',
-        'department', 'branch', 'reporting_group', 'manager_user_id', 'path', 'depth',
+        'control_class', 'department', 'branch', 'responsibility_unit',
+        'reporting_group', 'manager_user_id', 'path', 'depth',
         'is_postable', 'allows_revenue', 'effective_from', 'effective_to', 'is_active',
     ];
 
@@ -62,6 +80,7 @@ class CostCentre extends Model
             'effective_from' => 'immutable_date',
             'effective_to' => 'immutable_date',
             'depth' => 'integer',
+            'control_class' => 'integer',
         ];
     }
 
@@ -119,5 +138,33 @@ class CostCentre extends Model
     public function label(): string
     {
         return $this->code.' — '.$this->displayName();
+    }
+
+    /**
+     * The control class this centre's costs are gathered under, 5-9. Falls back to the
+     * taxonomy when the column has not been set, so the mapping lives in one place.
+     */
+    public function controlClass(): ?int
+    {
+        return $this->control_class ?? self::CONTROL_CLASSES[$this->cost_centre_type] ?? null;
+    }
+
+    /**
+     * The composite statutory code the distribution grid keys on:
+     * <control class><use element, 2 digits>. ٥٣١ is "salaries and wages, production
+     * centres" -- account 3115 in a production centre gives element 31 and class 5.
+     *
+     * Null where the account is not a use: the grid covers elements 31-39 only.
+     */
+    public function compositeCodeFor(Account $account): ?string
+    {
+        $element = $account->elementCode();
+        $class = $this->controlClass();
+
+        if ($element === null || $class === null || $account->account_class !== 'use') {
+            return null;
+        }
+
+        return $class.$element;
     }
 }

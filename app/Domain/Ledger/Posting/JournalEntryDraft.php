@@ -29,6 +29,9 @@ final readonly class JournalEntryDraft
         public string $currencyCode = 'IQD',
         public ?int $costCentreId = null,
         public ?int $projectId = null,
+        /** Document-level activity classification, defaulted onto each line. */
+        public ?string $activityType = null,
+        public ?string $activityNature = null,
         public bool $isAdjusting = false,
         public bool $isClosing = false,
         public bool $isOpening = false,
@@ -86,6 +89,8 @@ final readonly class JournalEntryDraft
             currencyCode: $this->currencyCode,
             costCentreId: $this->costCentreId,
             projectId: $this->projectId,
+            activityType: $this->activityType,
+            activityNature: $this->activityNature,
             isAdjusting: $this->isAdjusting,
             isClosing: $this->isClosing,
             isOpening: $this->isOpening,

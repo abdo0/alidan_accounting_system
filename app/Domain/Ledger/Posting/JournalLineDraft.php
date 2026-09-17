@@ -24,6 +24,10 @@ final readonly class JournalLineDraft
         public ?string $taxBaseAmount = null,
         public ?string $quantity = null,
         public ?string $uom = null,
+        /** جاري | استثماري — current vs investment activity. */
+        public ?string $activityType = null,
+        /** اعتيادي | استثنائي — ordinary vs exceptional activity. */
+        public ?string $activityNature = null,
     ) {}
 
     public static function debit(int $accountId, string $amount, ?int $costCentreId = null, ?string $description = null): self
@@ -61,6 +65,8 @@ final readonly class JournalLineDraft
             taxBaseAmount: $this->taxBaseAmount,
             quantity: $this->quantity,
             uom: $this->uom,
+            activityType: $this->activityType,
+            activityNature: $this->activityNature,
         );
     }
 

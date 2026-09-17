@@ -21,6 +21,10 @@ use RuntimeException;
  * @property int $account_id
  * @property int|null $cost_centre_id
  * @property int|null $project_id
+ * @property string|null $account_code
+ * @property string|null $cost_account_code
+ * @property string|null $activity_type
+ * @property string|null $activity_nature
  * @property string $currency_code
  * @property string|numeric $debit_amount
  * @property string|numeric $credit_amount
@@ -45,7 +49,8 @@ class JournalLine extends Model
 
     protected $fillable = [
         'journal_entry_id', 'entity_id', 'fiscal_period_id', 'entry_date', 'line_no',
-        'account_id', 'cost_centre_id', 'project_id', 'currency_code', 'exchange_rate',
+        'account_id', 'account_code', 'cost_account_code', 'cost_centre_id', 'project_id',
+        'activity_type', 'activity_nature', 'currency_code', 'exchange_rate',
         'debit_amount', 'credit_amount', 'functional_debit', 'functional_credit',
         'description', 'partner_type', 'partner_id', 'tax_code_id', 'tax_base_amount',
         'quantity', 'uom', 'reconciliation_id', 'posted_at',

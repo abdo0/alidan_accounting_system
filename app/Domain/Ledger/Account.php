@@ -144,4 +144,14 @@ class Account extends Model
     {
         return $this->code.' — '.$this->displayName();
     }
+
+    /**
+     * The level-2 ancestor of this account's code -- the "use element" the cost
+     * distribution grid is keyed on. 3352 -> 33, 3115 -> 31. Null for a class root,
+     * which has no element.
+     */
+    public function elementCode(): ?string
+    {
+        return strlen($this->code) >= 2 ? substr($this->code, 0, 2) : null;
+    }
 }

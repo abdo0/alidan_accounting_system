@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Ledger\Posting;
 
+use App\Domain\Dimensions\CostCentre;
+use App\Domain\Ledger\Account;
 use App\Domain\Ledger\Journal;
 use App\Domain\Ledger\JournalEntry;
 use App\Domain\Organisation\FiscalPeriod;
@@ -172,7 +174,19 @@ final class PostingService
         $now = now();
         $rows = [];
 
+        // Loaded once so each line can carry its code without a query per line.
+        $accountIds = array_map(fn (JournalLineDraft $l): int => $l->accountId, $draft->lines);
+        $accounts = Account::query()->whereIn('id', array_unique($accountIds))->get()->keyBy('id');
+
+        $centreIds = array_filter(array_map(fn (JournalLineDraft $l): ?int => $l->costCentreId, $draft->lines));
+        $centres = $centreIds === []
+            ? collect()
+            : CostCentre::query()->whereIn('id', array_unique($centreIds))->get()->keyBy('id');
+
         foreach ($draft->lines as $index => $line) {
+            $account = $accounts->get($line->accountId);
+            $centre = $line->costCentreId === null ? null : $centres->get($line->costCentreId);
+
             $rows[] = [
                 'journal_entry_id' => $entry->id,
                 'entity_id' => $draft->entityId,
@@ -180,8 +194,18 @@ final class PostingService
                 'entry_date' => $draft->entryDate->toDateString(),
                 'line_no' => $index + 1,
                 'account_id' => $line->accountId,
+                // Denormalised deliberately: the UAS never reuses a code, so a posted
+                // line keeps the code it was posted under, permanently.
+                'account_code' => $account?->code,
                 'cost_centre_id' => $line->costCentreId,
+                // <control class><use element>, e.g. ٥٣١. Null unless the line is a use
+                // charged to a centre -- the distribution grid covers elements 31-39.
+                'cost_account_code' => $account instanceof Account && $centre instanceof CostCentre
+                    ? $centre->compositeCodeFor($account)
+                    : null,
                 'project_id' => $line->projectId,
+                'activity_type' => $line->activityType ?? $draft->activityType,
+                'activity_nature' => $line->activityNature ?? $draft->activityNature,
                 'currency_code' => $draft->currencyCode,
                 'exchange_rate' => 1,
                 'debit_amount' => $line->debit,

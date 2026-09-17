@@ -36,6 +36,7 @@ final class PostingValidator
         $this->checkAccounts($draft, $accounts);
         $this->checkDimensions($draft, $accounts);
         $this->checkAdjusting($draft, $accounts);
+        $this->checkMemorandum($draft, $accounts);
         $this->checkJournal($draft);
         $this->checkEvidence($draft);
 
@@ -246,6 +247,95 @@ final class PostingValidator
         }
 
         return false;
+    }
+
+    /**
+     * V-19 — الحسابات المتقابلة.
+     *
+     * Classes 19 and 29 are a paired memorandum mechanism: "كل ما يقيد في أحد الحسابين
+     * المتقابلين يقيد في الجانب المعاكس من الحساب الآخر". Every entry to one leg is
+     * mirrored on the opposite side of its partner, so the pair nets to nothing and
+     * neither appears within the balance sheet totals.
+     *
+     * Two rules follow. A memorandum entry may not mix with financial accounts -- that
+     * would put a real amount against a memo one. And each leg must have its partner in
+     * the same entry, on the opposite side, for the same amount.
+     *
+     * Partners pair by TRAILING digits, never by the word مقابل: on 1922 and 1924 the
+     * prefix sits on the opposite side from where the pattern suggests.
+     *
+     * @param  Collection<int, Account>  $accounts
+     */
+    private function checkMemorandum(JournalEntryDraft $draft, Collection $accounts): void
+    {
+        $memoLines = [];
+        $financialLines = 0;
+
+        foreach ($draft->lines as $line) {
+            $account = $accounts->get($line->accountId);
+
+            if (! $account instanceof Account) {
+                continue;
+            }
+
+            if ($account->isMemorandum()) {
+                $memoLines[] = [$line, $account];
+            } else {
+                $financialLines++;
+            }
+        }
+
+        if ($memoLines === []) {
+            return;
+        }
+
+        if ($financialLines > 0) {
+            $this->fail('V-19', 'accounting.validation.memo_mixed_with_financial');
+
+            return;
+        }
+
+        // Index what the entry offers on each side, so each leg can find its partner.
+        $offered = [];
+
+        foreach ($memoLines as [$line, $account]) {
+            $side = $line->isDebit() ? 'D' : 'C';
+            $amount = $line->isDebit() ? $line->debit : $line->credit;
+            $offered[$account->code][$side][] = $amount;
+        }
+
+        foreach ($memoLines as [$line, $account]) {
+            $partner = $account->contra_pair_code;
+
+            if ($partner === null) {
+                $this->fail('V-19', 'accounting.validation.memo_no_partner', [
+                    'account' => $account->label(),
+                ]);
+
+                continue;
+            }
+
+            $oppositeSide = $line->isDebit() ? 'C' : 'D';
+            $amount = $line->isDebit() ? $line->debit : $line->credit;
+            $available = $offered[$partner][$oppositeSide] ?? [];
+
+            $matched = false;
+
+            foreach ($available as $index => $candidate) {
+                if (bccomp($candidate, $amount, 4) === 0) {
+                    unset($offered[$partner][$oppositeSide][$index]);
+                    $matched = true;
+                    break;
+                }
+            }
+
+            if (! $matched) {
+                $this->fail('V-19', 'accounting.validation.memo_unpaired', [
+                    'account' => $account->label(),
+                    'partner' => $partner,
+                ]);
+            }
+        }
     }
 
     /** V-15 */
