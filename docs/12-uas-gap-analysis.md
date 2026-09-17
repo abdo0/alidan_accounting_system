@@ -1,9 +1,11 @@
 # 12 — Gap Analysis: النظام المحاسبي الموحد vs the current build
 
 **Reads from:** [10 — Source Analysis](10-uas-source-analysis.md)
-**Assessed against:** branch `build/accounting-system` as at 2026-09-17 — foundations,
-bilingual UI, general ledger and posting engine complete; 63 tests green; subledgers,
-reporting and UI not yet built.
+**Assessed against:** branch `build/accounting-system` as at 2026-09-17. Foundations,
+bilingual UI, general ledger, posting engine, the UAS chart, account codes on the
+posting line, contra accounts and the statement engine are complete — **93 tests green**.
+Subledgers and the Filament UI are still not built, so several analytical statements
+render a "pending" note rather than figures.
 
 **This is an alignment checklist, not a compliance certificate.** Al-Idan is private
 sector and outside the standard's stated scope ([10 §10.2](10-uas-source-analysis.md)).
@@ -30,9 +32,10 @@ Legend: **✅ meets** · **⚠ partial** · **❌ gap** · **➕ we exceed the s
 | Computerisation controls (Ch 10) | ✅ / ➕ Meets all seven; exceeds on four dimensions the standard omits |
 | Auditability | ➕ Substantially exceeds |
 
-The headline: **the accounting machinery we built is sound and mostly conformant; the
-accounting *content* — chart, statements, cost structure — is wrong and must be
-replaced.** That is the better way round, because the machinery is the expensive part.
+The headline when this analysis was first written was that the machinery was sound and
+the accounting *content* was wrong. The content has now largely been replaced: chart,
+statements and contra accounts are done. **What remains is the cost-accounting
+reconciliation (§12.5) and the subledgers that several statements are waiting on.**
 
 ---
 
@@ -40,15 +43,15 @@ replaced.** That is the better way round, because the machinery is the expensive
 
 | # | Requirement | Status | Detail |
 |---|---|---|---|
-| D-1 | Nine top-level classes (`1`–`4` financial, `5`–`9` cost-centre controls) | ❌ | We have five IFRS-style classes. `accounts.account_class` CHECK constraint must be altered |
-| D-2 | No separate equity class — رأس المال and الاحتياطيات are liabilities | ❌ | We model `equity` as a class |
-| D-3 | Hierarchical decimal codes, 1–6 digits, parent = prefix, digit `0` unused | ❌ | We use 4-digit range-based codes |
-| D-4 | Named levels (إجمالي / عام / مساعد / فرعي / جزئي / تحليلي) | ❌ | No `account_level` column |
-| D-5 | Minimum 3 levels, maximum 6 | ❌ | Not modelled |
-| D-6 | Posting at level 3 or deeper, at the branch leaf | ⚠ | We enforce leaf-only posting (V-05) but not the depth ≥ 3 rule |
-| D-7 | Deliberate gaps in sibling numbering (`17`, `27`, `233`, `328`, `371`) | ⚠ | Seeder must treat the chart as an enumeration, never inferring |
+| D-1 | Nine top-level classes (`1`–`4` financial, `5`–`9` cost-centre controls) | ✅ | `account_class` altered to the UAS nine |
+| D-2 | No separate equity class — رأس المال and الاحتياطيات are liabilities | ✅ | Equity removed; capital and reserves are liabilities |
+| D-3 | Hierarchical decimal codes, 1–6 digits, parent = prefix, digit `0` unused | ✅ | Enforced by CHECK constraints and by the seeder's prefix-parent validation |
+| D-4 | Named levels (إجمالي / عام / مساعد / فرعي / جزئي / تحليلي) | ✅ | `account_level`, constrained to equal the code length |
+| D-5 | Minimum 3 levels, maximum 6 | ✅ | `accounts_level_valid` |
+| D-6 | Posting at level 3 or deeper, at the branch leaf | ✅ | `accounts_postable_depth` plus leaf-only derivation in the seeder |
+| D-7 | Deliberate gaps in sibling numbering (`17`, `27`, `233`, `2311`, `328`, `371`) | ✅ | The chart is an enumeration; the seeder creates nothing that is not printed |
 | D-8 | Activity classification: جاري/استثماري and اعتيادي/استثنائي | ✅ Columns, draft fields and posting path — the columns existed but were unreachable until now |
-| D-9 | Value-added components derivable from the chart | ❌ | Depends on D-1 |
+| D-9 | Value-added components derivable from the chart | ✅ | The GVA statement computes from the chart and reconciles to its distribution |
 | D-10 | Chart file is the validation authority for permitted codes (Ch 10, ملف الدليل) | ✅ | `entity_account_settings` + V-05 already do exactly this |
 
 **Not stated in the source, therefore our decision to record:** neither `is_postable` nor
@@ -98,8 +101,8 @@ requirement by rendering it, and gain the ability to produce it at any level.
 | S-9 | 26 analytical statements | ⚠ All 26 defined; those fed by an unbuilt subledger render a visible "pending" note rather than silent zeros |
 | S-10 | Universal column frame with prior-year comparative and كشف cross-reference | ✅ Rendered, verified in Arabic PDF |
 
-Our planned statement set (P&L, balance sheet, SOCE, IFRS cash flow) maps onto **none of
-these one-for-one**. This is the largest single body of new work.
+The original IFRS-shaped plan (P&L, balance sheet, SOCE, IFRS cash flow) mapped onto
+**none of these one-for-one** and has been replaced wholesale by the prescribed set.
 
 Worth noting for scoping: **S-2 vs S-3 depends on whether Al-Idan operates cost centres.**
 If it does not, the simpler إنموذج ٢ applies and a large part of the cost-accounting work
