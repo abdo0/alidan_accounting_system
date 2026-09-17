@@ -175,6 +175,14 @@ final class PostingValidator
             }
 
             if ($line->costCentreId === null) {
+                // The standard never allocates element 35 (مشتريات البضائع والأراضي بغرض
+                // البيع) to a cost centre -- it goes straight to the trading account and
+                // is added back when reconciling total uses. A blanket "every use needs a
+                // centre" rule would reject conformant behaviour.
+                if ($this->isCostCentreExempt($account)) {
+                    continue;
+                }
+
                 if ($account->requiresCostCentreOn($draft->entryDate)) {
                     $this->fail('V-07', 'accounting.validation.cost_centre_required', [
                         'account' => $account->label(),
@@ -224,6 +232,20 @@ final class PostingValidator
         if ($touched->contains(fn (Account $a): bool => $a->isCashOrBank())) {
             $this->fail('V-12', 'accounting.validation.adjusting_no_cash');
         }
+    }
+
+    private function isCostCentreExempt(Account $account): bool
+    {
+        /** @var list<string> $prefixes */
+        $prefixes = config('accounting.cost_centre_exempt_prefixes', []);
+
+        foreach ($prefixes as $prefix) {
+            if (str_starts_with($account->code, $prefix)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /** V-15 */

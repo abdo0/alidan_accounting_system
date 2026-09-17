@@ -73,10 +73,15 @@ class ReferenceSeeder extends Seeder
         $map = config('accounting.accounts');
 
         $entity->update([
+            // الفائض المتراكم
             'retained_earnings_account_id' => $this->accountId($map['retained_earnings']),
+            // حساب النشاط الجاري
             'current_earnings_account_id' => $this->accountId($map['current_year_earnings']),
-            'suspense_account_id' => $this->accountId($map['suspense']),
-            'rounding_account_id' => $this->accountId($map['rounding']),
+            // The UAS has no suspense account; unresolved items sit in the sundry
+            // accounts, with the same "must be clear before close" discipline.
+            'suspense_account_id' => $this->accountId($map['sundry_debit']),
+            // فروقات نقدية
+            'rounding_account_id' => $this->accountId($map['rounding_debit']),
         ]);
     }
 
@@ -131,30 +136,43 @@ class ReferenceSeeder extends Seeder
      */
     private function seedCostCentres(Entity $entity): void
     {
+        // The UAS fixes the cost-centre taxonomy and reserves chart classes 5-9 for it.
+        // Two placements differ from intuition and must be seeded correctly: welfare
+        // centres (canteen, clinic, housing, staff transport) are PRODUCTION-SERVICE,
+        // not administrative; and the finished-goods store is MARKETING while the
+        // raw-material stores are production-service.
         $tree = [
-            ['ROOT', 'Al-Idan', 'العيدان', null, 'admin', false, null, null],
-            ['100', 'Operations', 'العمليات', 'ROOT', 'operating', false, null, null],
-            ['110', 'Baghdad Branch', 'فرع بغداد', '100', 'operating', true, 'Operations', 'Baghdad'],
-            ['120', 'Basra Branch', 'فرع البصرة', '100', 'operating', true, 'Operations', 'Basra'],
-            ['130', 'Erbil Branch', 'فرع أربيل', '100', 'operating', true, 'Operations', 'Erbil'],
-            ['200', 'Commercial', 'التجاري', 'ROOT', 'operating', false, null, null],
-            ['210', 'Sales', 'المبيعات', '200', 'operating', true, 'Commercial', 'Baghdad'],
-            ['220', 'Marketing', 'التسويق', '200', 'support', true, 'Commercial', 'Baghdad'],
-            ['300', 'Support', 'الدعم', 'ROOT', 'support', false, null, null],
-            ['310', 'Finance', 'المالية', '300', 'support', true, 'Support', 'Baghdad'],
-            ['320', 'IT', 'تقنية المعلومات', '300', 'support', true, 'Support', 'Baghdad'],
-            ['330', 'Human Resources', 'الموارد البشرية', '300', 'support', true, 'Support', 'Baghdad'],
-            ['340', 'Facilities', 'الخدمات العامة', '300', 'support', true, 'Support', 'Baghdad'],
-            // Landing zone for anything that arrives without a centre. An honest
-            // "unassigned" is better than a guessed attribution that looks complete
-            // and is wrong.
-            ['900', 'Unassigned', 'غير موزع', 'ROOT', 'admin', true, null, null],
+            ['ROOT', 'Al-Idan', 'العيدان', null, 'admin', 8, false, null, null],
+
+            ['5', 'Production centres', 'مراكز الإنتاج', 'ROOT', 'production', 5, false, null, null],
+            ['51', 'Main plant', 'المعمل الرئيسي', '5', 'production', 5, true, 'Operations', 'Baghdad'],
+
+            ['6', 'Production services', 'مراكز الخدمات الإنتاجية', 'ROOT', 'prod_service', 6, false, null, null],
+            ['61', 'Staff welfare', 'الخدمات الاجتماعية للعاملين', '6', 'prod_service', 6, true, 'Support', 'Baghdad'],
+            ['62', 'Workshops', 'ورش التصنيع والصيانة', '6', 'prod_service', 6, true, 'Support', 'Baghdad'],
+            ['63', 'Stores', 'المخازن', '6', 'prod_service', 6, true, 'Support', 'Baghdad'],
+            ['65', 'Utilities', 'محطات القوى المحركة', '6', 'prod_service', 6, true, 'Support', 'Baghdad'],
+
+            ['7', 'Marketing services', 'مراكز الخدمات التسويقية', 'ROOT', 'marketing', 7, false, null, null],
+            ['71', 'Sales', 'المبيعات', '7', 'marketing', 7, true, 'Commercial', 'Baghdad'],
+            ['72', 'Finished goods store', 'مخزن البضاعة الجاهزة', '7', 'marketing', 7, true, 'Commercial', 'Baghdad'],
+
+            ['8', 'Administrative services', 'مراكز الخدمات الإدارية', 'ROOT', 'admin', 8, false, null, null],
+            ['81', 'Finance', 'المالية', '8', 'admin', 8, true, 'Support', 'Baghdad'],
+            ['82', 'Administration', 'الإدارة', '8', 'admin', 8, true, 'Support', 'Baghdad'],
+
+            ['9', 'Capital operations', 'مراكز العمليات الرأسمالية', 'ROOT', 'capital', 9, false, null, null],
+            ['91', 'Self-constructed assets', 'الموجودات المصنعة داخلياً', '9', 'capital', 9, true, 'Operations', 'Baghdad'],
+
+            // Landing zone for anything arriving without a centre. An honest
+            // "unassigned" beats a guessed attribution that looks complete and is wrong.
+            ['900', 'Unassigned', 'غير موزع', 'ROOT', 'admin', 8, true, null, null],
         ];
 
         $ids = [];
         $paths = [];
 
-        foreach ($tree as [$code, $name, $nameAr, $parentCode, $type, $postable, $dept, $branch]) {
+        foreach ($tree as [$code, $name, $nameAr, $parentCode, $type, $controlClass, $postable, $dept, $branch]) {
             $parentId = $parentCode === null ? null : $ids[$parentCode];
             $path = $parentCode === null ? $code : $paths[$parentCode].'.'.$code;
 
@@ -165,11 +183,13 @@ class ReferenceSeeder extends Seeder
                     'name' => $name,
                     'name_ar' => $nameAr,
                     'cost_centre_type' => $type,
+                    'control_class' => $controlClass,
                     'department' => $dept,
+                    'responsibility_unit' => $dept,
                     'branch' => $branch,
                     'depth' => substr_count($path, '.'),
                     'is_postable' => $postable,
-                    'allows_revenue' => $type === 'operating',
+                    'allows_revenue' => in_array($type, ['production', 'marketing'], true),
                     'is_active' => true,
                 ]
             );

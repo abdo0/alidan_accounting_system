@@ -22,6 +22,14 @@ use Tests\TestCase;
 
 class PostingEngineTest extends TestCase
 {
+    // Accounts and cost centres below are Iraqi Unified Accounting System codes:
+    //   3352 استئجار مباني وإنشاءات  (a use; requires a cost centre)
+    //   183  نقدية لدى المصارف       (class 18 النقود, so adjusting entries may not touch it)
+    //   1611 مدينون قطاع عام          (inside the 161 receivables control branch)
+    //   1621 أوراق قبض قطاع عام        (balance sheet asset, outside any control branch)
+    //   2663 مصاريف مستحقة            (balance sheet liability)
+    //   33   المستلزمات الخدمية       (a heading -- never postable)
+    // Cost centres 51 production, 61 production-service, 71 marketing, 5 heading.
     private Entity $entity;
 
     private User $accountant;
@@ -77,8 +85,8 @@ class PostingEngineTest extends TestCase
     public function it_posts_a_balanced_entry(): void
     {
         $entry = $this->postEntry($this->draft([
-            JournalLineDraft::debit($this->account('6500')->id, '3000000', $this->costCentre('110')->id, 'March rent'),
-            JournalLineDraft::credit($this->account('1100')->id, '3000000'),
+            JournalLineDraft::debit($this->account('3352')->id, '3000000', $this->costCentre('51')->id, 'إيجار آذار'),
+            JournalLineDraft::credit($this->account('183')->id, '3000000'),
         ]));
 
         $this->assertSame(JournalEntry::POSTED, $entry->status);
@@ -95,8 +103,8 @@ class PostingEngineTest extends TestCase
 
         for ($i = 0; $i < 3; $i++) {
             $numbers[] = $this->postEntry($this->draft([
-                JournalLineDraft::debit($this->account('6500')->id, '1000', $this->costCentre('110')->id),
-                JournalLineDraft::credit($this->account('1100')->id, '1000'),
+                JournalLineDraft::debit($this->account('3352')->id, '1000', $this->costCentre('51')->id),
+                JournalLineDraft::credit($this->account('183')->id, '1000'),
             ]))->entry_no;
         }
 
@@ -107,13 +115,13 @@ class PostingEngineTest extends TestCase
     public function it_updates_the_balance_store(): void
     {
         $this->postEntry($this->draft([
-            JournalLineDraft::debit($this->account('6500')->id, '3000000', $this->costCentre('110')->id),
-            JournalLineDraft::credit($this->account('1100')->id, '3000000'),
+            JournalLineDraft::debit($this->account('3352')->id, '3000000', $this->costCentre('51')->id),
+            JournalLineDraft::credit($this->account('183')->id, '3000000'),
         ]));
 
         $rent = DB::table('gl_balances')
-            ->where('account_id', $this->account('6500')->id)
-            ->where('cost_centre_id', $this->costCentre('110')->id)
+            ->where('account_id', $this->account('3352')->id)
+            ->where('cost_centre_id', $this->costCentre('51')->id)
             ->first();
 
         $this->assertNotNull($rent);
@@ -132,14 +140,14 @@ class PostingEngineTest extends TestCase
     public function it_aggregates_repeated_keys_within_one_entry(): void
     {
         $this->postEntry($this->draft([
-            JournalLineDraft::debit($this->account('6500')->id, '1000000', $this->costCentre('110')->id),
-            JournalLineDraft::debit($this->account('6500')->id, '500000', $this->costCentre('110')->id),
-            JournalLineDraft::credit($this->account('1100')->id, '1500000'),
+            JournalLineDraft::debit($this->account('3352')->id, '1000000', $this->costCentre('51')->id),
+            JournalLineDraft::debit($this->account('3352')->id, '500000', $this->costCentre('51')->id),
+            JournalLineDraft::credit($this->account('183')->id, '1500000'),
         ]));
 
         $rows = DB::table('gl_balances')
-            ->where('account_id', $this->account('6500')->id)
-            ->where('cost_centre_id', $this->costCentre('110')->id)
+            ->where('account_id', $this->account('3352')->id)
+            ->where('cost_centre_id', $this->costCentre('51')->id)
             ->get();
 
         $this->assertCount(1, $rows, 'Repeated keys must accumulate into one balance row.');
@@ -155,13 +163,13 @@ class PostingEngineTest extends TestCase
     {
         for ($i = 0; $i < 3; $i++) {
             $this->postEntry($this->draft([
-                JournalLineDraft::debit($this->account('1350')->id, '100000'),
-                JournalLineDraft::credit($this->account('1100')->id, '100000'),
+                JournalLineDraft::debit($this->account('1621')->id, '100000'),
+                JournalLineDraft::credit($this->account('183')->id, '100000'),
             ]));
         }
 
         $rows = DB::table('gl_balances')
-            ->where('account_id', $this->account('1350')->id)
+            ->where('account_id', $this->account('1621')->id)
             ->whereNull('cost_centre_id')
             ->get();
 
@@ -173,13 +181,13 @@ class PostingEngineTest extends TestCase
     public function it_chains_the_tamper_evidence_hash(): void
     {
         $first = $this->postEntry($this->draft([
-            JournalLineDraft::debit($this->account('6500')->id, '1000', $this->costCentre('110')->id),
-            JournalLineDraft::credit($this->account('1100')->id, '1000'),
+            JournalLineDraft::debit($this->account('3352')->id, '1000', $this->costCentre('51')->id),
+            JournalLineDraft::credit($this->account('183')->id, '1000'),
         ]));
 
         $second = $this->postEntry($this->draft([
-            JournalLineDraft::debit($this->account('6500')->id, '2000', $this->costCentre('110')->id),
-            JournalLineDraft::credit($this->account('1100')->id, '2000'),
+            JournalLineDraft::debit($this->account('3352')->id, '2000', $this->costCentre('51')->id),
+            JournalLineDraft::credit($this->account('183')->id, '2000'),
         ]));
 
         $this->assertSame(str_repeat('0', 64), $first->prev_entry_hash);
@@ -192,8 +200,8 @@ class PostingEngineTest extends TestCase
     public function the_same_idempotency_key_posts_only_once(): void
     {
         $lines = [
-            JournalLineDraft::debit($this->account('6500')->id, '5000', $this->costCentre('110')->id),
-            JournalLineDraft::credit($this->account('1100')->id, '5000'),
+            JournalLineDraft::debit($this->account('3352')->id, '5000', $this->costCentre('51')->id),
+            JournalLineDraft::credit($this->account('183')->id, '5000'),
         ];
 
         $first = $this->postEntry($this->draft($lines, ['idempotencyKey' => 'abc-123']));
@@ -212,8 +220,8 @@ class PostingEngineTest extends TestCase
 
         try {
             $this->postEntry($this->draft([
-                JournalLineDraft::debit($this->account('6500')->id, '1000', $this->costCentre('110')->id),
-                JournalLineDraft::credit($this->account('1100')->id, '900'),
+                JournalLineDraft::debit($this->account('3352')->id, '1000', $this->costCentre('51')->id),
+                JournalLineDraft::credit($this->account('183')->id, '900'),
             ]));
         } catch (PostingException $e) {
             $this->assertTrue($e->failed('V-01'));
@@ -227,7 +235,7 @@ class PostingEngineTest extends TestCase
     {
         try {
             $this->postEntry($this->draft([
-                JournalLineDraft::debit($this->account('6500')->id, '1000', $this->costCentre('110')->id),
+                JournalLineDraft::debit($this->account('3352')->id, '1000', $this->costCentre('51')->id),
             ]));
             $this->fail('A one-sided entry must not post.');
         } catch (PostingException $e) {
@@ -245,8 +253,8 @@ class PostingEngineTest extends TestCase
 
         try {
             $this->postEntry($this->draft([
-                JournalLineDraft::debit($this->account('6500')->id, '1000', $this->costCentre('110')->id),
-                JournalLineDraft::credit($this->account('1100')->id, '1000'),
+                JournalLineDraft::debit($this->account('3352')->id, '1000', $this->costCentre('51')->id),
+                JournalLineDraft::credit($this->account('183')->id, '1000'),
             ]));
             $this->fail('A closed period must not accept postings.');
         } catch (PostingException $e) {
@@ -259,8 +267,8 @@ class PostingEngineTest extends TestCase
     {
         try {
             $this->postEntry($this->draft([
-                JournalLineDraft::debit($this->account('6')->id, '1000'),
-                JournalLineDraft::credit($this->account('1100')->id, '1000'),
+                JournalLineDraft::debit($this->account('33')->id, '1000'),
+                JournalLineDraft::credit($this->account('183')->id, '1000'),
             ]));
             $this->fail('A heading account must not accept postings.');
         } catch (PostingException $e) {
@@ -273,8 +281,8 @@ class PostingEngineTest extends TestCase
     {
         try {
             $this->postEntry($this->draft([
-                JournalLineDraft::debit($this->account('1200')->id, '1000'),
-                JournalLineDraft::credit($this->account('4000')->id, '1000', $this->costCentre('210')->id),
+                JournalLineDraft::debit($this->account('1611')->id, '1000'),
+                JournalLineDraft::credit($this->account('4111')->id, '1000', $this->costCentre('71')->id),
             ]));
             $this->fail('A control account must be written only by its subledger.');
         } catch (PostingException $e) {
@@ -289,8 +297,8 @@ class PostingEngineTest extends TestCase
         // so the cascade resolves to null and validation must stop it.
         try {
             $this->postEntry($this->draft([
-                JournalLineDraft::debit($this->account('6500')->id, '1000'),
-                JournalLineDraft::credit($this->account('1100')->id, '1000'),
+                JournalLineDraft::debit($this->account('3352')->id, '1000'),
+                JournalLineDraft::credit($this->account('183')->id, '1000'),
             ]));
             $this->fail('A cost-centre-required account must not post without one.');
         } catch (PostingException $e) {
@@ -298,13 +306,35 @@ class PostingEngineTest extends TestCase
         }
     }
 
+    /**
+     * The standard's own exception. كشف توزيع الإستخدامات على مراقبات مراكز التكاليف
+     * (printed 417) allocates elements 31-39 across the five centre groups but records
+     * of element 35: "لا يوزع (٣٥) على المراقبات مما يستوجب إضافته لدى إجراء المطابقة
+     * لإجمالي عناصر الإستخدامات" -- it is not distributed, and must be added back when
+     * reconciling total uses. A blanket cost-centre rule would reject this.
+     */
+    #[Test]
+    public function v07_element_35_posts_without_a_cost_centre(): void
+    {
+        $entry = $this->postEntry($this->draft([
+            JournalLineDraft::debit($this->account('3511')->id, '5000000'),
+            JournalLineDraft::credit($this->account('183')->id, '5000000'),
+        ]));
+
+        $this->assertSame(JournalEntry::POSTED, $entry->status);
+        $this->assertNull(
+            $entry->lines->firstWhere('account_id', $this->account('3511')->id)->cost_centre_id,
+            'Element 35 is never allocated to a cost centre.'
+        );
+    }
+
     #[Test]
     public function v08_it_rejects_a_non_postable_cost_centre(): void
     {
         try {
             $this->postEntry($this->draft([
-                JournalLineDraft::debit($this->account('6500')->id, '1000', $this->costCentre('100')->id),
-                JournalLineDraft::credit($this->account('1100')->id, '1000'),
+                JournalLineDraft::debit($this->account('3352')->id, '1000', $this->costCentre('5')->id),
+                JournalLineDraft::credit($this->account('183')->id, '1000'),
             ]));
             $this->fail('A heading cost centre must not accept postings.');
         } catch (PostingException $e) {
@@ -317,8 +347,8 @@ class PostingEngineTest extends TestCase
     {
         try {
             $this->postEntry($this->draft([
-                JournalLineDraft::debit($this->account('6500')->id, '1000', $this->costCentre('110')->id),
-                JournalLineDraft::credit($this->account('1100')->id, '1000'),
+                JournalLineDraft::debit($this->account('3352')->id, '1000', $this->costCentre('51')->id),
+                JournalLineDraft::credit($this->account('183')->id, '1000'),
             ], ['isAdjusting' => true]));
             $this->fail('Doc A: adjusting entries never involve the cash account.');
         } catch (PostingException $e) {
@@ -332,8 +362,8 @@ class PostingEngineTest extends TestCase
         try {
             // Two balance sheet accounts only.
             $this->postEntry($this->draft([
-                JournalLineDraft::debit($this->account('1350')->id, '1000'),
-                JournalLineDraft::credit($this->account('2200')->id, '1000'),
+                JournalLineDraft::debit($this->account('1621')->id, '1000'),
+                JournalLineDraft::credit($this->account('2663')->id, '1000'),
             ], ['isAdjusting' => true]));
             $this->fail('An adjusting entry must touch both statements.');
         } catch (PostingException $e) {
@@ -345,8 +375,8 @@ class PostingEngineTest extends TestCase
     public function v12_a_valid_adjusting_entry_posts(): void
     {
         $entry = $this->postEntry($this->draft([
-            JournalLineDraft::debit($this->account('6500')->id, '400000', $this->costCentre('110')->id),
-            JournalLineDraft::credit($this->account('1350')->id, '400000'),
+            JournalLineDraft::debit($this->account('3352')->id, '400000', $this->costCentre('51')->id),
+            JournalLineDraft::credit($this->account('1621')->id, '400000'),
         ], ['isAdjusting' => true]));
 
         $this->assertSame(JournalEntry::POSTED, $entry->status);
@@ -358,8 +388,8 @@ class PostingEngineTest extends TestCase
     {
         try {
             $this->postEntry($this->draft([
-                JournalLineDraft::debit($this->account('6500')->id, '1000', $this->costCentre('110')->id),
-                JournalLineDraft::credit($this->account('1100')->id, '1000'),
+                JournalLineDraft::debit($this->account('3352')->id, '1000', $this->costCentre('51')->id),
+                JournalLineDraft::credit($this->account('183')->id, '1000'),
             ], ['sourceDocumentNo' => null]));
             $this->fail('Objectivity: a manual entry needs documentary evidence.');
         } catch (PostingException $e) {
@@ -372,8 +402,8 @@ class PostingEngineTest extends TestCase
     {
         try {
             $this->postEntry($this->draft([
-                JournalLineDraft::debit($this->account('6500')->id, '1000', $this->costCentre('110')->id),
-                JournalLineDraft::credit($this->account('1100')->id, '1000'),
+                JournalLineDraft::debit($this->account('3352')->id, '1000', $this->costCentre('51')->id),
+                JournalLineDraft::credit($this->account('183')->id, '1000'),
             ], ['journalCode' => 'ALC']));
             $this->fail('The allocation journal is written by the allocation run only.');
         } catch (PostingException $e) {
@@ -386,8 +416,8 @@ class PostingEngineTest extends TestCase
     {
         try {
             $this->postEntry($this->draft([
-                JournalLineDraft::debit($this->account('6500')->id, '1000'),
-                JournalLineDraft::credit($this->account('1100')->id, '900'),
+                JournalLineDraft::debit($this->account('3352')->id, '1000'),
+                JournalLineDraft::credit($this->account('183')->id, '900'),
             ]));
             $this->fail('Expected a posting exception.');
         } catch (PostingException $e) {
@@ -404,8 +434,8 @@ class PostingEngineTest extends TestCase
     public function a_posted_entry_cannot_be_updated(): void
     {
         $entry = $this->postEntry($this->draft([
-            JournalLineDraft::debit($this->account('6500')->id, '1000', $this->costCentre('110')->id),
-            JournalLineDraft::credit($this->account('1100')->id, '1000'),
+            JournalLineDraft::debit($this->account('3352')->id, '1000', $this->costCentre('51')->id),
+            JournalLineDraft::credit($this->account('183')->id, '1000'),
         ]));
 
         $this->expectExceptionMessageMatches('/posted and cannot be modified/');
@@ -417,8 +447,8 @@ class PostingEngineTest extends TestCase
     public function a_posted_line_cannot_be_updated(): void
     {
         $entry = $this->postEntry($this->draft([
-            JournalLineDraft::debit($this->account('6500')->id, '1000', $this->costCentre('110')->id),
-            JournalLineDraft::credit($this->account('1100')->id, '1000'),
+            JournalLineDraft::debit($this->account('3352')->id, '1000', $this->costCentre('51')->id),
+            JournalLineDraft::credit($this->account('183')->id, '1000'),
         ]));
 
         $this->expectExceptionMessageMatches('/posted entry and cannot be modified/');
@@ -432,8 +462,8 @@ class PostingEngineTest extends TestCase
     public function a_posted_line_cannot_be_deleted(): void
     {
         $entry = $this->postEntry($this->draft([
-            JournalLineDraft::debit($this->account('6500')->id, '1000', $this->costCentre('110')->id),
-            JournalLineDraft::credit($this->account('1100')->id, '1000'),
+            JournalLineDraft::debit($this->account('3352')->id, '1000', $this->costCentre('51')->id),
+            JournalLineDraft::credit($this->account('183')->id, '1000'),
         ]));
 
         DB::table('journal_lines')->where('journal_entry_id', $entry->id)->delete();
@@ -445,8 +475,8 @@ class PostingEngineTest extends TestCase
     public function a_posted_entry_cannot_be_deleted(): void
     {
         $entry = $this->postEntry($this->draft([
-            JournalLineDraft::debit($this->account('6500')->id, '1000', $this->costCentre('110')->id),
-            JournalLineDraft::credit($this->account('1100')->id, '1000'),
+            JournalLineDraft::debit($this->account('3352')->id, '1000', $this->costCentre('51')->id),
+            JournalLineDraft::credit($this->account('183')->id, '1000'),
         ]));
 
         DB::table('journal_entries')->where('id', $entry->id)->delete();
@@ -465,34 +495,34 @@ class PostingEngineTest extends TestCase
             entryDate: CarbonImmutable::create(2026, 3, 15),
             description: 'Header default',
             lines: [
-                JournalLineDraft::debit($this->account('6500')->id, '1000'),
-                JournalLineDraft::credit($this->account('1100')->id, '1000'),
+                JournalLineDraft::debit($this->account('3352')->id, '1000'),
+                JournalLineDraft::credit($this->account('183')->id, '1000'),
             ],
             sourceDocumentNo: 'DOC-002',
-            costCentreId: $this->costCentre('120')->id,
+            costCentreId: $this->costCentre('61')->id,
         );
 
         $entry = $this->postEntry($draft);
 
         $this->assertSame(
-            $this->costCentre('120')->id,
-            $entry->lines->firstWhere('account_id', $this->account('6500')->id)->cost_centre_id
+            $this->costCentre('61')->id,
+            $entry->lines->firstWhere('account_id', $this->account('3352')->id)->cost_centre_id
         );
     }
 
     #[Test]
     public function the_account_default_cost_centre_applies(): void
     {
-        $this->account('6500')->update(['default_cost_centre_id' => $this->costCentre('130')->id]);
+        $this->account('3352')->update(['default_cost_centre_id' => $this->costCentre('71')->id]);
 
         $entry = $this->postEntry($this->draft([
-            JournalLineDraft::debit($this->account('6500')->id, '1000'),
-            JournalLineDraft::credit($this->account('1100')->id, '1000'),
+            JournalLineDraft::debit($this->account('3352')->id, '1000'),
+            JournalLineDraft::credit($this->account('183')->id, '1000'),
         ]));
 
         $this->assertSame(
-            $this->costCentre('130')->id,
-            $entry->lines->firstWhere('account_id', $this->account('6500')->id)->cost_centre_id
+            $this->costCentre('71')->id,
+            $entry->lines->firstWhere('account_id', $this->account('3352')->id)->cost_centre_id
         );
     }
 
@@ -500,21 +530,21 @@ class PostingEngineTest extends TestCase
     public function a_cost_split_posts_as_separate_lines_and_stays_balanced(): void
     {
         $entry = $this->postEntry($this->draft([
-            JournalLineDraft::debit($this->account('6500')->id, '1500000', $this->costCentre('110')->id),
-            JournalLineDraft::debit($this->account('6500')->id, '900000', $this->costCentre('120')->id),
-            JournalLineDraft::debit($this->account('6500')->id, '600000', $this->costCentre('130')->id),
-            JournalLineDraft::credit($this->account('1100')->id, '3000000'),
+            JournalLineDraft::debit($this->account('3352')->id, '1500000', $this->costCentre('51')->id),
+            JournalLineDraft::debit($this->account('3352')->id, '900000', $this->costCentre('61')->id),
+            JournalLineDraft::debit($this->account('3352')->id, '600000', $this->costCentre('71')->id),
+            JournalLineDraft::credit($this->account('183')->id, '3000000'),
         ]));
 
         $this->assertCount(4, $entry->lines);
         $this->assertSame('3000000.0000', (string) $entry->total_debit);
 
         $byCentre = DB::table('gl_balances')
-            ->where('account_id', $this->account('6500')->id)
+            ->where('account_id', $this->account('3352')->id)
             ->pluck('period_debit', 'cost_centre_id');
 
-        $this->assertSame('1500000.0000', $byCentre[$this->costCentre('110')->id]);
-        $this->assertSame('900000.0000', $byCentre[$this->costCentre('120')->id]);
-        $this->assertSame('600000.0000', $byCentre[$this->costCentre('130')->id]);
+        $this->assertSame('1500000.0000', $byCentre[$this->costCentre('51')->id]);
+        $this->assertSame('900000.0000', $byCentre[$this->costCentre('61')->id]);
+        $this->assertSame('600000.0000', $byCentre[$this->costCentre('71')->id]);
     }
 }

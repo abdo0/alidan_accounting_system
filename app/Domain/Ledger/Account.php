@@ -38,16 +38,24 @@ class Account extends Model
 {
     use HasTranslatableName;
 
-    /** Classes that appear in the income statement. */
-    public const PROFIT_AND_LOSS_CLASSES = [
-        'revenue', 'cost_of_sales', 'expense', 'other_income', 'other_expense', 'tax',
-    ];
+    /**
+     * حسابات النتيجة — the result accounts. In the UAS these are just two classes:
+     * الاستخدامات (uses) and الموارد (resources).
+     */
+    public const PROFIT_AND_LOSS_CLASSES = ['use', 'resource'];
 
-    public const BALANCE_SHEET_CLASSES = ['asset', 'liability', 'equity', 'clearing'];
+    /** حسابات الميزانية — the balance sheet accounts. There is no separate equity class. */
+    public const BALANCE_SHEET_CLASSES = ['asset', 'liability'];
+
+    /** The five cost-centre control classes, 5-9. */
+    public const COST_CENTRE_CLASSES = [
+        'cc_production', 'cc_prod_services', 'cc_marketing', 'cc_admin', 'cc_capital',
+    ];
 
     protected $fillable = [
         'parent_id', 'code', 'name', 'name_ar', 'account_class', 'account_subtype',
-        'normal_balance', 'statement', 'cash_flow_class', 'contra_of_account_id',
+        'account_level', 'normal_balance', 'statement', 'cash_flow_class',
+        'contra_of_account_id', 'contra_pair_code',
         'is_postable', 'is_control_account', 'control_subledger', 'allow_manual_entry',
         'is_reconcilable', 'requires_cost_centre', 'cost_centre_enforced_from',
         'default_cost_centre_id', 'requires_project', 'currency_code',
@@ -64,6 +72,7 @@ class Account extends Model
             'requires_cost_centre' => 'boolean',
             'requires_project' => 'boolean',
             'is_active' => 'boolean',
+            'account_level' => 'integer',
             'cost_centre_enforced_from' => 'immutable_date',
         ];
     }
@@ -96,9 +105,25 @@ class Account extends Model
         return in_array($this->account_class, self::BALANCE_SHEET_CLASSES, true);
     }
 
+    /**
+     * Class 18 النقود is cash in the UAS -- 181 بالصندوق, 183 لدى المصارف, and so on.
+     * Derived from the code rather than a subtype column, because the standard's own
+     * structure already carries the information.
+     */
     public function isCashOrBank(): bool
     {
-        return in_array($this->account_subtype, ['cash', 'bank'], true);
+        return str_starts_with($this->code, '18');
+    }
+
+    /** الحسابات المتقابلة — memorandum accounts, excluded from the balance sheet totals. */
+    public function isMemorandum(): bool
+    {
+        return $this->statement === 'MEMO';
+    }
+
+    public function isCostCentreControl(): bool
+    {
+        return in_array($this->account_class, self::COST_CENTRE_CLASSES, true);
     }
 
     /**
