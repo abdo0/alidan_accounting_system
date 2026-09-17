@@ -85,6 +85,18 @@ return [
         'dimension_correction' => 'Cost centre correction',
     ],
 
+    'statement' => [
+        'for_year_ended' => 'For the financial year ended :date',
+        'for_period_ended' => 'For period :period of :year',
+        'code_column' => 'Chart code',
+        'account_column' => 'Account name',
+        'current_year' => 'Current year / IQD',
+        'prior_year' => 'Prior year / IQD',
+        'statement_ref' => 'Statement no.',
+        'continued' => 'Continued /',
+        'awaiting_data' => 'This statement is defined but its source module (:module) is not yet built, so it carries no figures.',
+    ],
+
     'validation' => [
         'unbalanced' => 'The entry does not balance: debits are :debit and credits are :credit.',
         'minimum_lines' => 'A journal entry needs at least two lines.',

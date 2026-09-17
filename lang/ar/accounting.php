@@ -85,6 +85,18 @@ return [
         'dimension_correction' => 'تصحيح مركز التكلفة',
     ],
 
+    'statement' => [
+        'for_year_ended' => 'للسنة المالية المنتهية في :date',
+        'for_period_ended' => 'للفترة :period من السنة :year',
+        'code_column' => 'رقم الدليل المحاسبي',
+        'account_column' => 'أسم الحساب',
+        'current_year' => 'السنة الحالية / دينــار',
+        'prior_year' => 'السنة السابقة / دينــار',
+        'statement_ref' => 'رقم الكشف',
+        'continued' => 'تابع /',
+        'awaiting_data' => 'هذا الكشف معرّف إلا أن وحدة مصدر بياناته (:module) لم تُنجز بعد، لذا لا يتضمن مبالغ.',
+    ],
+
     'validation' => [
         'unbalanced' => 'القيد غير متوازن: المدين :debit والدائن :credit.',
         'minimum_lines' => 'يجب أن يحتوي القيد على سطرين على الأقل.',

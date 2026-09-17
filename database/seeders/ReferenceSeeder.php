@@ -31,6 +31,7 @@ class ReferenceSeeder extends Seeder
         $this->seedJournals();
         $this->seedCostCentres($entity);
         $this->seedFiscalYears($entity);
+        $this->call(StatementDefinitionSeeder::class);
     }
 
     private function seedCurrency(): void

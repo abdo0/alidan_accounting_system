@@ -15,6 +15,10 @@
         .num { text-align: {{ $isRtl ? 'left' : 'right' }}; font-family: dejavusans; }
         .txt { text-align: {{ $isRtl ? 'right' : 'left' }}; }
         .total td { border-top: 0.4mm solid #333; font-weight: bold; border-bottom: none; }
+        .section td { background: #f7f7f7; font-weight: bold; }
+        .ref  { width: 12mm; text-align: center; font-family: dejavusans; font-size: 8pt; }
+        .code { width: 26mm; text-align: {{ $isRtl ? 'right' : 'left' }}; font-family: dejavusans; font-size: 8pt; }
+        .notice { border: 0.2mm solid #999; background: #fafafa; padding: 2mm; margin-bottom: 3mm; font-size: 8pt; }
     </style>
 </head>
 <body>

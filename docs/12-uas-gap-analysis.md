@@ -18,12 +18,12 @@ Legend: **✅ meets** · **⚠ partial** · **❌ gap** · **➕ we exceed the s
 
 | Area | Verdict |
 |---|---|
-| Chart of accounts structure | ❌ Fundamentally different; replacement required |
+| Chart of accounts structure | ✅ **Closed** — 682 UAS accounts seeded, validated against the printed skeleton |
 | Posting mechanics and double entry | ✅ Already conformant, and stricter than required |
 | Document control | ✅ / ➕ Meets all six rules; exceeds on evidence immutability |
 | Books and journals | ⚠ Right shape, wrong names and columns |
-| Financial statements | ❌ Wrong set entirely; Value Added statement absent |
-| Contra / off-balance accounts | ❌ No equivalent mechanism |
+| Financial statements | ✅ **Closed** — all 9 primary and 26 analytical defined; GVA reconciles to its distribution |
+| Contra / off-balance accounts | ✅ **Closed** — V-19 pairing, excluded from balance sheet totals |
 | Cost accounting | 🔁 Conflicts with a documented design decision |
 | Depreciation | ⚠ Mechanism correct, rates invented rather than statutory |
 | Arabic localisation | ✅ / ➕ Already bilingual and RTL; exceeds what the standard asks |
@@ -47,7 +47,7 @@ replaced.** That is the better way round, because the machinery is the expensive
 | D-5 | Minimum 3 levels, maximum 6 | ❌ | Not modelled |
 | D-6 | Posting at level 3 or deeper, at the branch leaf | ⚠ | We enforce leaf-only posting (V-05) but not the depth ≥ 3 rule |
 | D-7 | Deliberate gaps in sibling numbering (`17`, `27`, `233`, `328`, `371`) | ⚠ | Seeder must treat the chart as an enumeration, never inferring |
-| D-8 | Activity classification: جاري/استثماري and اعتيادي/استثنائي | ❌ | No columns on `journal_lines` |
+| D-8 | Activity classification: جاري/استثماري and اعتيادي/استثنائي | ✅ Columns, draft fields and posting path — the columns existed but were unreachable until now |
 | D-9 | Value-added components derivable from the chart | ❌ | Depends on D-1 |
 | D-10 | Chart file is the validation authority for permitted codes (Ch 10, ملف الدليل) | ✅ | `entity_account_settings` + V-05 already do exactly this |
 
@@ -87,16 +87,16 @@ requirement by rendering it, and gain the ability to produce it at any level.
 
 | # | Requirement | Status |
 |---|---|---|
-| S-1 | الميزانية العامة, vertical, contra accounts shown below the totals | ❌ |
-| S-2 | حساب الإنتاج والمتاجرة والأرباح والخسائر والتوزيع (إنموذج ١) | ❌ |
-| S-3 | حساب الإيرادات والمصروفات والتوزيع (إنموذج ٢) — service cos. without cost centres | ❌ |
-| S-4 | حساب الأرباح والخسائر للتعهدات والمقاولات المنجزة — contractors, per-project matrix | ❌ |
-| S-5 | كشف العمليات الجارية, two stages, `384` split across them | ❌ |
-| S-6 | كشف التدفق النقدي, three activity sections | ⚠ Planned as IFRS indirect method; **the UAS form differs** |
-| S-7 | **كشف إجمالي القيمة المضافة** | ❌ No equivalent anywhere |
-| S-8 | **كشف توزيع إجمالي القيمة المضافة**, reconciling to S-7 | ❌ |
-| S-9 | 26 analytical statements | ❌ |
-| S-10 | Universal column frame with prior-year comparative and كشف cross-reference | ❌ |
+| S-1 | الميزانية العامة, vertical, contra accounts shown below the totals | ✅ Built; a test proves a memo entry does not move the asset total |
+| S-2 | حساب الإنتاج والمتاجرة والأرباح والخسائر والتوزيع (إنموذج ١) | ✅ Built |
+| S-3 | حساب الإيرادات والمصروفات والتوزيع (إنموذج ٢) — service cos. without cost centres | ✅ Built |
+| S-4 | حساب الأرباح والخسائر للتعهدات والمقاولات المنجزة — contractors, per-project matrix | ⚠ Defined; the per-project matrix awaits a projects module |
+| S-5 | كشف العمليات الجارية, two stages, `384` split across them | ✅ Built, with `384` in stage 1 and the rest of `38` in stage 2 |
+| S-6 | كشف التدفق النقدي, three activity sections | ✅ Built to the UAS form, not the IFRS one |
+| S-7 | **كشف إجمالي القيمة المضافة** | ✅ Built; verified 20m − 4m − 1m = 15m at factor cost |
+| S-8 | **كشف توزيع إجمالي القيمة المضافة**, reconciling to S-7 | ✅ Built; **a test asserts the two agree** |
+| S-9 | 26 analytical statements | ⚠ All 26 defined; those fed by an unbuilt subledger render a visible "pending" note rather than silent zeros |
+| S-10 | Universal column frame with prior-year comparative and كشف cross-reference | ✅ Rendered, verified in Arabic PDF |
 
 Our planned statement set (P&L, balance sheet, SOCE, IFRS cash flow) maps onto **none of
 these one-for-one**. This is the largest single body of new work.
