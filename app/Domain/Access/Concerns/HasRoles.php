@@ -134,13 +134,18 @@ trait HasRoles
         return $this->resolvedRoles()->contains(fn (Role $role): bool => $role->requires_mfa);
     }
 
-    /** Whether this user has actually enrolled the second factor their roles demand. */
+    /** Whether an authenticator has been enrolled. Enrolment is optional for every role. */
+    public function hasEnrolledMfa(): bool
+    {
+        return $this->mfa_confirmed_at !== null || filled($this->getAppAuthenticationSecret());
+    }
+
+    /**
+     * Policies used to refuse posting and approval until MFA was enrolled. Enrolment
+     * is now optional, including for the system administrator, so this always passes.
+     */
     public function hasSatisfiedMfaRequirement(): bool
     {
-        if (! $this->requiresMfa()) {
-            return true;
-        }
-
-        return $this->mfa_confirmed_at !== null || filled($this->getAppAuthenticationSecret());
+        return true;
     }
 }

@@ -175,12 +175,12 @@ class AccessMatrixTest extends TestCase
     }
 
     #[Test]
-    public function sensitive_abilities_need_the_second_factor_enrolled(): void
+    public function sensitive_abilities_do_not_require_the_second_factor(): void
     {
         $withoutMfa = $this->userWithRole('finance_manager', mfa: false);
         $withMfa = $this->userWithRole('finance_manager');
 
-        $this->assertFalse(Gate::forUser($withoutMfa)->allows('change', Parameter::class));
+        $this->assertTrue(Gate::forUser($withoutMfa)->allows('change', Parameter::class));
         $this->assertTrue(Gate::forUser($withMfa)->allows('change', Parameter::class));
         $this->assertInstanceOf(User::class, $withMfa);
     }

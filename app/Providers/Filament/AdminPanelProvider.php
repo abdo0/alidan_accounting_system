@@ -37,8 +37,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->profile(EditProfile::class, isSimple: false)
-            // Required for any role that can post or approve (docs/02 §2.6). Enforced
-            // per-role rather than globally so a read-only viewer is not burdened.
+            // Offered on the profile for every role; enrolment is optional.
             ->multiFactorAuthentication(AppAuthentication::make()->recoverable())
             ->colors([
                 'primary' => Color::Amber,
@@ -77,7 +76,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-                // After Authenticate, so it has a user to inspect.
+                // After Authenticate, so it has a user to inspect. Reminds only.
                 RequireMfaForSensitiveRoles::class,
                 EnforceAbsoluteSessionTimeout::class,
             ]);
