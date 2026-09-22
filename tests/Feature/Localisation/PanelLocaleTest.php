@@ -6,16 +6,30 @@ namespace Tests\Feature\Localisation;
 
 use App\Domain\Access\Role;
 use App\Models\User;
-use Database\Seeders\AccessControlSeeder;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class PanelLocaleTest extends TestCase
 {
     #[Test]
+    public function the_panel_opens_in_arabic_by_default(): void
+    {
+        // The UAS is an Arabic standard and every statement form is Arabic, so the
+        // panel opens right-to-left unless a user has chosen otherwise.
+        $this->assertSame('ar', config('app.locale'));
+
+        $this->get('/admin/login')
+            ->assertOk()
+            ->assertSee('dir="rtl"', false);
+    }
+
+    #[Test]
     public function the_login_page_renders_left_to_right_in_english(): void
     {
-        $this->get('/admin/login')
+        // Stated explicitly rather than leaning on the default, so this keeps
+        // testing direction rather than testing what the default happens to be.
+        $this->withSession(['locale' => 'en'])
+            ->get('/admin/login')
             ->assertOk()
             ->assertSee('dir="ltr"', false);
     }
@@ -45,10 +59,9 @@ class PanelLocaleTest extends TestCase
     #[Test]
     public function the_locale_switch_persists_to_the_user(): void
     {
-        $this->seed(AccessControlSeeder::class);
 
         $user = User::factory()->create(['locale' => 'en']);
-        $user->roles()->attach(Role::where('name', 'gl_accountant')->value('id'));
+        $user->roles()->attach(Role::where('name', 'accountant')->value('id'));
 
         $this->actingAs($user)
             ->from('/admin')
@@ -70,10 +83,9 @@ class PanelLocaleTest extends TestCase
     #[Test]
     public function a_deactivated_user_cannot_reach_the_panel(): void
     {
-        $this->seed(AccessControlSeeder::class);
 
         $user = User::factory()->create(['is_active' => false]);
-        $user->roles()->attach(Role::where('name', 'gl_accountant')->value('id'));
+        $user->roles()->attach(Role::where('name', 'accountant')->value('id'));
 
         $this->assertFalse($user->canAccessPanel(filament()->getPanel('admin')));
     }
@@ -81,10 +93,9 @@ class PanelLocaleTest extends TestCase
     #[Test]
     public function a_service_account_cannot_reach_the_panel(): void
     {
-        $this->seed(AccessControlSeeder::class);
 
         $user = User::factory()->create(['is_service_account' => true]);
-        $user->roles()->attach(Role::where('name', 'gl_accountant')->value('id'));
+        $user->roles()->attach(Role::where('name', 'accountant')->value('id'));
 
         $this->assertFalse($user->canAccessPanel(filament()->getPanel('admin')));
     }

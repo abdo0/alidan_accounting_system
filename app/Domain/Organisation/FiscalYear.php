@@ -4,42 +4,42 @@ declare(strict_types=1);
 
 namespace App\Domain\Organisation;
 
-use Carbon\CarbonImmutable;
+use App\Domain\Organisation\Enums\FiscalYearStatus;
+use App\Domain\Shared\Concerns\BelongsToCompany;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * @property int $id
- * @property int $entity_id
- * @property string $code
- * @property CarbonImmutable $starts_on
- * @property CarbonImmutable $ends_on
- * @property string $status
+ * An accounting year and its twelve monthly periods.
  */
 class FiscalYear extends Model
 {
-    protected $fillable = ['entity_id', 'code', 'starts_on', 'ends_on', 'status'];
+    use BelongsToCompany;
+
+    protected $table = 'fiscal_years';
+
+    protected $fillable = ['company_id', 'year_code', 'starts_on', 'ends_on', 'status', 'closed_by', 'closed_at'];
 
     protected function casts(): array
     {
-        return ['starts_on' => 'immutable_date', 'ends_on' => 'immutable_date'];
+        return [
+            'starts_on' => 'immutable_date',
+            'ends_on' => 'immutable_date',
+            'closed_at' => 'immutable_datetime',
+            'status' => FiscalYearStatus::class,
+        ];
     }
 
-    /** @return BelongsTo<Entity, $this> */
-    public function entity(): BelongsTo
+    /** @return BelongsTo<Company, $this> */
+    public function company(): BelongsTo
     {
-        return $this->belongsTo(Entity::class);
+        return $this->belongsTo(Company::class, 'company_id');
     }
 
-    /** @return HasMany<FiscalPeriod, $this> */
+    /** @return HasMany<AccountingPeriod, $this> */
     public function periods(): HasMany
     {
-        return $this->hasMany(FiscalPeriod::class);
-    }
-
-    public function isOpen(): bool
-    {
-        return $this->status === 'open';
+        return $this->hasMany(AccountingPeriod::class, 'fiscal_year_id');
     }
 }

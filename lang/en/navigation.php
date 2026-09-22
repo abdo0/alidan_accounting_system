@@ -4,15 +4,13 @@ declare(strict_types=1);
 
 return [
     'groups' => [
-        'ledger' => 'General Ledger',
-        'receivables' => 'Receivables',
-        'payables' => 'Payables',
+        'journal' => 'Journal',
+        'funding' => 'Funding & Advances',
         'cash' => 'Cash & Bank',
-        'assets' => 'Fixed Assets',
-        'inventory' => 'Inventory',
-        'payroll' => 'Payroll',
-        'reporting' => 'Reporting',
-        'budgeting' => 'Budgets & Allocations',
+        'controls' => 'Controls',
+        'reporting' => 'Reports',
+        'closing' => 'Period Closing',
+        'master_data' => 'Master Data',
         'setup' => 'Setup',
         'administration' => 'Administration',
     ],

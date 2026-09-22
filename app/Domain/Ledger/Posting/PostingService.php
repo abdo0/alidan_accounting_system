@@ -4,278 +4,122 @@ declare(strict_types=1);
 
 namespace App\Domain\Ledger\Posting;
 
-use App\Domain\Dimensions\CostCentre;
-use App\Domain\Ledger\Account;
-use App\Domain\Ledger\Journal;
-use App\Domain\Ledger\JournalEntry;
-use App\Domain\Organisation\FiscalPeriod;
+use App\Domain\Ledger\Enums\ApprovalAction;
+use App\Domain\Ledger\Enums\JournalStatus;
+use App\Domain\Ledger\JournalHeader;
+use App\Domain\Ledger\Validation\Checkpoint;
+use App\Domain\Ledger\Validation\JournalRejected;
+use App\Domain\Ledger\Validation\PostingContext;
+use App\Domain\Ledger\Validation\ValidationChain;
+use App\Domain\Ledger\Validation\Violation;
+use App\Domain\Organisation\AccountingPeriod;
+use App\Domain\Shared\Approval;
+use App\Domain\Shared\Audit\AuditRecorder;
 use App\Models\User;
 use App\Support\DatabaseContext;
 use Illuminate\Support\Facades\DB;
-use RuntimeException;
 
 /**
- * The only writer of journal_lines.
+ * Posts an approved entry (Document B §2.2).
  *
- * LOCK ORDER -- fixed, and the reason this is written down rather than left implicit:
+ *   1-3  resolve the posting rule and the period, run the validation chain
+ *   4    run the posting guards (duplicate detection)
+ *   5    draw the JV number from the gapless sequence
+ *   6    persist header and status in one transaction
+ *   7    write the approvals and audit rows
+ *   8    let the observers raise exceptions and open subledger records
+ *   9    commit
  *
- *   1. fiscal_periods  FOR SHARE   (so the period cannot close under us)
- *   2. sequence_counters FOR UPDATE (gapless number + hash chain grain)
- *   3. gl_balances upserts, key-sorted (BalanceUpdater)
- *
- * PeriodCloseService takes the period FOR UPDATE first and re-runs its gates after
- * acquiring it -- gates evaluated before the lock are stale. Any new code taking more
- * than one of these must follow the same order or it will deadlock.
+ * Nothing is written when a rule fails except a rejected-attempt audit row.
  */
 final class PostingService
 {
+    /**
+     * @param  iterable<PostingGuard>  $guards
+     * @param  iterable<PostingObserver>  $observers
+     */
     public function __construct(
-        private readonly PostingValidator $validator,
-        private readonly CostCentreResolver $costCentres,
-        private readonly Sequencer $sequencer,
-        private readonly BalanceUpdater $balances,
+        private readonly ValidationChain $chain,
+        private readonly JvNumberAllocator $numbers,
         private readonly EntryHasher $hasher,
+        private readonly AuditRecorder $audit,
+        private readonly iterable $guards = [],
+        private readonly iterable $observers = [],
     ) {}
 
-    public function post(JournalEntryDraft $draft, ?User $actor = null): JournalEntry
+    public function post(User $actor, JournalHeader $header): JournalHeader
     {
-        $actor ??= auth()->user();
+        try {
+            return DatabaseContext::withAudit('journal_post', null, fn (): JournalHeader => $this->postWithinTransaction($actor, $header));
+        } catch (JournalRejected $rejected) {
+            $this->audit->event('journal_post_rejected', 'journal_headers', $header->id, $rejected->getMessage(), ['rules' => $rejected->rules()], $actor->id);
 
-        if (! $actor instanceof User && ! $draft->isSystemGenerated) {
-            throw new RuntimeException('A journal entry needs an author.');
+            throw $rejected;
         }
-
-        return DB::transaction(function () use ($draft, $actor): JournalEntry {
-            if ($actor instanceof User) {
-                DatabaseContext::setLocal('app.user_id', (string) $actor->id);
-            }
-
-            // Idempotency first: INSERT ... ON CONFLICT DO NOTHING inside the
-            // transaction. A SELECT-then-INSERT would be a TOCTOU race and would
-            // defeat the point, including for deadlock retries.
-            if ($draft->idempotencyKey !== null) {
-                $existing = $this->claimIdempotencyKey($draft);
-
-                if ($existing !== null) {
-                    return $existing;
-                }
-            }
-
-            // 1. Period lock. Without FOR SHARE a concurrent close can commit between
-            //    validation and our commit, and the entry lands in a closed period
-            //    where nobody will ever see it.
-            $period = $this->lockPeriod($draft);
-
-            // Resolve dimensions BEFORE validating, or V-07 rejects lines that would
-            // have defaulted correctly.
-            $resolved = $this->costCentres->apply($draft, $actor instanceof User ? $actor : null);
-
-            $this->validator->assertValid($resolved, $period, $actor instanceof User ? $actor : null);
-
-            $journal = Journal::query()->where('code', $resolved->journalCode)->firstOrFail();
-
-            $entry = $this->writeHeader($resolved, $period, $journal, $actor);
-
-            // 2. Sequence lock, taken as late as possible: validation is done, so the
-            //    per-journal serialisation lock is held only across the writes.
-            $entry->entry_no = $this->sequencer->next(
-                scope: 'journal_entry',
-                scopeKey: sprintf('%d:%d:%d', $resolved->entityId, $journal->id, $period->fiscal_year_id),
-                prefix: $journal->sequence_prefix.'-',
-            );
-
-            $this->writeLines($entry, $resolved, $period);
-            $entry->load('lines');
-
-            // The hash covers the lines, so it can only be computed once they exist,
-            // and it has to be written by the SAME statement that marks the entry
-            // posted: from that moment the row is immutable and a follow-up update is
-            // refused by the database.
-            $chain = $this->hasher->chain($entry, $period->fiscal_year_id);
-
-            $entry->forceFill([
-                'status' => JournalEntry::POSTED,
-                'posted_at' => now(),
-                'posted_by' => $actor instanceof User ? $actor->id : null,
-                'prev_entry_hash' => $chain['prev'],
-                'entry_hash' => $chain['hash'],
-            ])->save();
-
-            // 3. Balances, key-sorted inside the updater.
-            $this->balances->apply($entry);
-
-            if ($draft->idempotencyKey !== null) {
-                $this->recordIdempotentResult($draft, $entry);
-            }
-
-            return $entry->fresh(['lines']) ?? $entry;
-        });
     }
 
-    private function lockPeriod(JournalEntryDraft $draft): FiscalPeriod
+    private function postWithinTransaction(User $actor, JournalHeader $header): JournalHeader
     {
-        $period = FiscalPeriod::query()
-            ->where('entity_id', $draft->entityId)
-            ->whereDate('starts_on', '<=', $draft->entryDate)
-            ->whereDate('ends_on', '>=', $draft->entryDate)
-            ->where('is_adjustment_period', false)
-            ->sharedLock()
-            ->first();
+        /** @var JournalHeader $header */
+        $header = JournalHeader::query()->lockForUpdate()->findOrFail($header->id);
 
-        if (! $period instanceof FiscalPeriod) {
-            throw new PostingException([[
-                'rule' => 'V-03',
-                'message' => __('accounting.validation.date_outside_period', [
-                    'date' => $draft->entryDate->toDateString(),
-                    'period' => '-',
-                ]),
-            ]]);
+        // Held FOR SHARE so a period cannot be closed under a posting in flight.
+        AccountingPeriod::query()->whereKey($header->period_id)->sharedLock()->first();
+
+        $context = new PostingContext($header, $actor, Checkpoint::Post);
+        $result = $this->chain->runContext($context);
+        $findings = [...$result->blocking(), ...$result->unacknowledgedWarnings($header->acknowledged_warnings ?? [])];
+
+        foreach ($this->guards as $guard) {
+            $findings = [...$findings, ...$guard->beforePosting($context)];
         }
 
-        return $period;
-    }
-
-    private function writeHeader(
-        JournalEntryDraft $draft,
-        FiscalPeriod $period,
-        Journal $journal,
-        ?User $actor,
-    ): JournalEntry {
-        return JournalEntry::query()->create([
-            'entity_id' => $draft->entityId,
-            'journal_id' => $journal->id,
-            'fiscal_period_id' => $period->id,
-            'entry_date' => $draft->entryDate,
-            'posting_date' => $draft->effectivePostingDate(),
-            'description' => $draft->description,
-            'description_ar' => $draft->descriptionAr,
-            'currency_code' => $draft->currencyCode,
-            'exchange_rate' => 1,
-            'source_type' => $draft->sourceType,
-            'source_id' => $draft->sourceId,
-            'source_document_no' => $draft->sourceDocumentNo,
-            'source_document_date' => $draft->sourceDocumentDate,
-            'status' => JournalEntry::APPROVED,
-            'is_adjusting' => $draft->isAdjusting,
-            'is_closing' => $draft->isClosing,
-            'is_opening' => $draft->isOpening,
-            'is_system_generated' => $draft->isSystemGenerated,
-            'reverses_entry_id' => $draft->reversesEntryId,
-            'reversal_reason' => $draft->reversalReason,
-            'auto_reverse_on' => $draft->autoReverseOn,
-            'total_debit' => $draft->totalDebit(),
-            'total_credit' => $draft->totalCredit(),
-            'created_by' => $actor instanceof User ? $actor->id : $this->systemUserId(),
-        ]);
-    }
-
-    private function writeLines(JournalEntry $entry, JournalEntryDraft $draft, FiscalPeriod $period): void
-    {
-        $now = now();
-        $rows = [];
-
-        // Loaded once so each line can carry its code without a query per line.
-        $accountIds = array_map(fn (JournalLineDraft $l): int => $l->accountId, $draft->lines);
-        $accounts = Account::query()->whereIn('id', array_unique($accountIds))->get()->keyBy('id');
-
-        $centreIds = array_filter(array_map(fn (JournalLineDraft $l): ?int => $l->costCentreId, $draft->lines));
-        $centres = $centreIds === []
-            ? collect()
-            : CostCentre::query()->whereIn('id', array_unique($centreIds))->get()->keyBy('id');
-
-        foreach ($draft->lines as $index => $line) {
-            $account = $accounts->get($line->accountId);
-            $centre = $line->costCentreId === null ? null : $centres->get($line->costCentreId);
-
-            $rows[] = [
-                'journal_entry_id' => $entry->id,
-                'entity_id' => $draft->entityId,
-                'fiscal_period_id' => $period->id,
-                'entry_date' => $draft->entryDate->toDateString(),
-                'line_no' => $index + 1,
-                'account_id' => $line->accountId,
-                // Denormalised deliberately: the UAS never reuses a code, so a posted
-                // line keeps the code it was posted under, permanently.
-                'account_code' => $account?->code,
-                'cost_centre_id' => $line->costCentreId,
-                // <control class><use element>, e.g. ٥٣١. Null unless the line is a use
-                // charged to a centre -- the distribution grid covers elements 31-39.
-                'cost_account_code' => $account instanceof Account && $centre instanceof CostCentre
-                    ? $centre->compositeCodeFor($account)
-                    : null,
-                'project_id' => $line->projectId,
-                'activity_type' => $line->activityType ?? $draft->activityType,
-                'activity_nature' => $line->activityNature ?? $draft->activityNature,
-                'currency_code' => $draft->currencyCode,
-                'exchange_rate' => 1,
-                'debit_amount' => $line->debit,
-                'credit_amount' => $line->credit,
-                // IQD-only, so functional equals transaction. Written rather than
-                // left at zero so reports reading the functional columns are correct.
-                'functional_debit' => $line->debit,
-                'functional_credit' => $line->credit,
-                'description' => $line->description,
-                'partner_type' => $line->partnerType,
-                'partner_id' => $line->partnerId,
-                'tax_code_id' => $line->taxCodeId,
-                'tax_base_amount' => $line->taxBaseAmount,
-                'quantity' => $line->quantity,
-                'uom' => $line->uom,
-                'posted_at' => $now,
-            ];
+        if ($findings !== []) {
+            throw new JournalRejected($findings);
         }
 
-        DB::table('journal_lines')->insert($rows);
-    }
+        $from = $header->status->value;
+        $jvNo = $header->jv_no ?? $this->numbers->next($header);
+        $chain = $this->hasher->chain($header, $jvNo);
 
-    private function claimIdempotencyKey(JournalEntryDraft $draft): ?JournalEntry
-    {
-        $hash = hash('sha256', serialize([
-            $draft->entityId, $draft->journalCode, $draft->entryDate->toDateString(),
-            $draft->totalDebit(), $draft->totalCredit(), count($draft->lines),
-        ]));
+        $header->forceFill([
+            'jv_no' => $jvNo,
+            'posting_rule_id' => $context->postingRule->id ?? $header->posting_rule_id,
+            'status' => JournalStatus::Posted,
+            'posted_by' => $actor->id,
+            'posted_at' => now(),
+            'entry_hash' => $chain['hash'],
+            'prev_entry_hash' => $chain['prev'],
+        ])->save();
 
-        $inserted = DB::affectingStatement(
-            'INSERT INTO idempotency_keys (scope, key, request_hash, created_at)
-             VALUES (?, ?, ?, now())
-             ON CONFLICT (scope, key) DO NOTHING',
-            ['journal_entry', $draft->idempotencyKey, $hash]
-        );
+        Approval::record($header, ApprovalAction::Post, $actor, $from, JournalStatus::Posted->value);
 
-        if ($inserted > 0) {
-            return null;
+        foreach ($this->observers as $observer) {
+            $observer->posted($header, $actor);
         }
 
-        $row = DB::selectOne(
-            'SELECT result_id FROM idempotency_keys WHERE scope = ? AND key = ?',
-            ['journal_entry', $draft->idempotencyKey]
-        );
-
-        if ($row?->result_id === null) {
-            throw new RuntimeException(
-                'A posting with this idempotency key is already in flight.'
-            );
-        }
-
-        return JournalEntry::query()->with('lines')->findOrFail($row->result_id);
+        return $header;
     }
 
-    private function recordIdempotentResult(JournalEntryDraft $draft, JournalEntry $entry): void
+    /**
+     * The findings the chain would return at posting, without posting.
+     *
+     * @return list<Violation>
+     */
+    public function precheck(User $actor, JournalHeader $header): array
     {
-        DB::update(
-            'UPDATE idempotency_keys SET result_type = ?, result_id = ? WHERE scope = ? AND key = ?',
-            [JournalEntry::class, $entry->id, 'journal_entry', $draft->idempotencyKey]
-        );
+        $result = $this->chain->run($header, $actor, Checkpoint::Post);
+
+        return $result->violations;
     }
 
-    private function systemUserId(): int
+    /** Whether the ledger, all of it, still balances. Used by the integrity report. */
+    public static function ledgerDifference(): int
     {
-        $id = DB::table('users')->where('is_service_account', true)->value('id');
-
-        if ($id === null) {
-            throw new RuntimeException('No service account exists to author system entries.');
-        }
-
-        return (int) $id;
+        return (int) DB::table('journal_lines as jl')
+            ->join('journal_headers as jh', 'jh.id', '=', 'jl.journal_header_id')
+            ->whereIn('jh.status', JournalStatus::ledgerValues())
+            ->selectRaw('coalesce(sum(jl.debit) - sum(jl.credit), 0) AS diff')
+            ->value('diff');
     }
 }

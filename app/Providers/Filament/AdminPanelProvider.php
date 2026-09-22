@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Providers\Filament;
 
 use App\Filament\Enums\NavigationGroup;
+use App\Http\Middleware\EnforceAbsoluteSessionTimeout;
+use App\Http\Middleware\RequireMfaForSensitiveRoles;
 use App\Http\Middleware\SetDatabaseContext;
 use App\Http\Middleware\SetLocale;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
@@ -74,6 +76,9 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+                // After Authenticate, so it has a user to inspect.
+                RequireMfaForSensitiveRoles::class,
+                EnforceAbsoluteSessionTimeout::class,
             ]);
     }
 }

@@ -11,13 +11,12 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // Gapless numbering for BOTH journal entries and subledger documents.
-        // One counter row per scope; taken with SELECT ... FOR UPDATE inside the
-        // posting transaction, as late as possible so validation does not hold the
-        // per-journal serialisation lock.
+        // Gapless numbering (VR-10). One counter row per scope; taken with
+        // SELECT ... FOR UPDATE inside the posting transaction, as late as possible
+        // so validation does not hold the serialisation lock.
         Schema::create('sequence_counters', function (Blueprint $table): void {
-            $table->string('scope', 40);            // journal_entry | sales_invoice | ...
-            $table->string('scope_key', 120);       // entity:1|journal:GJ|fy:2027
+            $table->string('scope', 40);            // jv | exception | ...
+            $table->string('scope_key', 120);       // company:1|fy:2027
             $table->unsignedBigInteger('next_value')->default(1);
             $table->string('prefix', 20)->nullable();
             $table->unsignedSmallInteger('pad_to')->default(5);
@@ -26,7 +25,7 @@ return new class extends Migration
             $table->primary(['scope', 'scope_key']);
         });
 
-        // V-16. Checked with INSERT ... ON CONFLICT DO NOTHING inside the posting
+        // Checked with INSERT ... ON CONFLICT DO NOTHING inside the posting
         // transaction -- a SELECT-then-INSERT would be a TOCTOU race and would defeat
         // the point. Also what makes deadlock retry safe.
         Schema::create('idempotency_keys', function (Blueprint $table): void {
@@ -42,40 +41,63 @@ return new class extends Migration
             $table->unique(['scope', 'key']);
         });
 
-        // Evidence. P10/FR-008 make a source document a posting precondition, so this
-        // is not an optional convenience. Content-addressed and never overwritten:
-        // retrofitting content-addressing after files exist means you can never prove
-        // the integrity of the earlier ones.
-        Schema::create('attachments', function (Blueprint $table): void {
+        // Evidence (M16). A journal's document status says whether evidence is
+        // Complete, Partial or Missing; these rows are the evidence itself.
+        // Content-addressed and never overwritten: an auditor can re-hash the stored
+        // object and prove it is the file that was uploaded (Document B §8).
+        Schema::create('documents', function (Blueprint $table): void {
             $table->id();
-            $table->string('attachable_type', 100);
-            $table->unsignedBigInteger('attachable_id');
+            $table->string('documentable_type', 100);
+            $table->unsignedBigInteger('documentable_id');
+            $table->unsignedBigInteger('journal_line_id')->nullable();
+            $table->string('doc_type', 40);
+            $table->string('doc_ref', 120)->nullable();
+            $table->date('doc_date')->nullable();
+            $table->text('description')->nullable();
             $table->string('disk', 40)->default('documents');
-            $table->string('object_key', 512);       // immutable, content-addressed
+            $table->string('object_key', 512);
             $table->string('original_name', 255);
             $table->string('mime_type', 120);
             $table->unsignedBigInteger('size_bytes');
             $table->char('sha256', 64);
-            $table->string('document_type', 40)->nullable();
             $table->foreignId('uploaded_by')->constrained('users');
             $table->timestampTz('uploaded_at')->useCurrent();
 
-            $table->index(['attachable_type', 'attachable_id']);
+            $table->index(['documentable_type', 'documentable_id']);
             $table->index('sha256');
         });
 
-        DB::statement('SELECT attach_audit(?)', ['attachments']);
+        DB::statement(<<<'SQL'
+            ALTER TABLE documents ADD CONSTRAINT documents_doc_type_valid CHECK (doc_type IN (
+                'invoice', 'receipt', 'payment_voucher', 'receipt_voucher', 'contract',
+                'certificate', 'board_minute', 'bank_statement', 'approval', 'other'
+            ))
+        SQL);
 
-        // Attachments are evidence; evidence is not edited or withdrawn.
-        DB::statement('CREATE RULE attachments_no_update AS ON UPDATE TO attachments DO INSTEAD NOTHING');
-        DB::statement('CREATE RULE attachments_no_delete AS ON DELETE TO attachments DO INSTEAD NOTHING');
+        DB::statement('SELECT attach_audit(?)', ['documents']);
+
+        // Evidence is not edited or withdrawn. A trigger rather than a RULE so that
+        // the attempt fails loudly instead of silently doing nothing.
+        DB::statement(<<<'SQL'
+            CREATE OR REPLACE FUNCTION refuse_change()
+            RETURNS trigger AS $$
+            BEGIN
+                RAISE EXCEPTION '% on % is not permitted (%)', TG_OP, TG_TABLE_NAME, TG_ARGV[0]
+                    USING ERRCODE = 'insufficient_privilege';
+            END;
+            $$ LANGUAGE plpgsql
+        SQL);
+
+        DB::statement(<<<'SQL'
+            CREATE TRIGGER documents_immutable BEFORE UPDATE OR DELETE ON documents
+                FOR EACH ROW EXECUTE FUNCTION refuse_change('evidence is immutable')
+        SQL);
     }
 
     public function down(): void
     {
-        DB::statement('DROP RULE IF EXISTS attachments_no_delete ON attachments');
-        DB::statement('DROP RULE IF EXISTS attachments_no_update ON attachments');
-        Schema::dropIfExists('attachments');
+        Schema::dropIfExists('documents');
+        DB::statement('DROP FUNCTION IF EXISTS refuse_change()');
         Schema::dropIfExists('idempotency_keys');
         Schema::dropIfExists('sequence_counters');
     }

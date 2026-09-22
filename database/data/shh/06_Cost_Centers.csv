@@ -1,0 +1,20 @@
+Code,"Cost Center (EN)","Cost Center (AR)",Type
+CC-CORP,"Corporate Administration","الإدارة العامة",SG&A
+CC-PM,"Project Management","إدارة المشاريع",Project
+CC-ROAD-EXT,"External Roads","الطرق الخارجية",Project
+CC-ROAD-INT,"Internal Roads & Yards","الطرق الداخلية والساحات",Project
+CC-CIVIL,"Civil Works","الأعمال المدنية",Project
+CC-BLDG,"Buildings & Facilities","المباني والمرافق",Project
+CC-EM,"Electrical & Mechanical","الكهربائية والميكانيكية",Project
+CC-FIBER,"Fiber & Electronic Systems","الألياف والأنظمة الإلكترونية",Project
+CC-SEC,"Security & Safety","الأمن والسلامة",Project
+CC-EQUIP,"Equipment & Machinery","المعدات والمكائن",Project
+CC-ENG,"Engineering & Consulting","الهندسة والاستشارات",Project
+CC-GOV,"Government Approvals & Licensing","الموافقات والتراخيص الحكومية",Project
+CC-HR,"Human Resources","الموارد البشرية",SG&A
+CC-FIN,"Finance & Accounting","المالية والمحاسبة",SG&A
+CC-PROC,Procurement,المشتريات,SG&A
+CC-PR,"Public Relations","العلاقات العامة",SG&A
+CC-SHARED,"Shared Administrative Services","خدمات إدارية مشتركة",SG&A
+CC-OPS,"Operations after Opening","العمليات بعد الافتتاح",Operations
+CC-100D,"100-Dunum Development","تطوير الـ100 دونم",Project

@@ -1,0 +1,118 @@
+{
+    "source": "SHH-01_Document_C_Data_Dictionary_and_Accounting_Mapping.xlsx",
+    "sha256": "78c8e365fe5ad7ee5e81afe9e08493fca5f17a04665d8e7243a90c7aac045564",
+    "tabs": {
+        "01_Source_Mapping": {
+            "rows": 38,
+            "columns": 9
+        },
+        "02_Conflicts_Decisions": {
+            "rows": 15,
+            "columns": 5
+        },
+        "03_Enhancements": {
+            "rows": 18,
+            "columns": 6
+        },
+        "04_COA": {
+            "rows": 145,
+            "columns": 16
+        },
+        "05_Projects": {
+            "rows": 4,
+            "columns": 5
+        },
+        "06_Cost_Centers": {
+            "rows": 19,
+            "columns": 4
+        },
+        "07_Resp_Centers": {
+            "rows": 3,
+            "columns": 5
+        },
+        "08_Master_Data": {
+            "rows": 17,
+            "columns": 7
+        },
+        "09_Cash_Accounts": {
+            "rows": 8,
+            "columns": 6
+        },
+        "10_Value_Lists": {
+            "rows": 85,
+            "columns": 6
+        },
+        "11_Journal_Fields": {
+            "rows": 57,
+            "columns": 8
+        },
+        "12_Transaction_Types": {
+            "rows": 39,
+            "columns": 11
+        },
+        "13_Posting_Rules": {
+            "rows": 35,
+            "columns": 7
+        },
+        "14_FS_Lines": {
+            "rows": 54,
+            "columns": 8
+        },
+        "15_Account_FS_Map": {
+            "rows": 143,
+            "columns": 12
+        },
+        "16_Report_Catalogue": {
+            "rows": 33,
+            "columns": 9
+        },
+        "17_Report_Filters": {
+            "rows": 30,
+            "columns": 6
+        },
+        "18_Validation_Rules": {
+            "rows": 60,
+            "columns": 6
+        },
+        "19_User_Roles": {
+            "rows": 8,
+            "columns": 21
+        },
+        "20_Data_Model": {
+            "rows": 36,
+            "columns": 6
+        },
+        "21_Data_Dictionary": {
+            "rows": 56,
+            "columns": 12
+        },
+        "22_Migration_Mapping": {
+            "rows": 22,
+            "columns": 7
+        },
+        "23_Migration_Controls": {
+            "rows": 30,
+            "columns": 5
+        },
+        "24_Exceptions": {
+            "rows": 22,
+            "columns": 7
+        },
+        "25_UAT_Cases": {
+            "rows": 52,
+            "columns": 11
+        },
+        "26_Traceability": {
+            "rows": 62,
+            "columns": 9
+        },
+        "27_Parameters": {
+            "rows": 15,
+            "columns": 5
+        },
+        "28_Phasing": {
+            "rows": 26,
+            "columns": 2
+        }
+    }
+}

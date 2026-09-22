@@ -1,0 +1,4 @@
+"Alias","Expansion","Meaning"
+@final_economic,"115001-115099|116001-116011|118001-118009|510010-510019|610001-610019|112001-112102|211001-211090","The final economic account of a direct payment (Document B §2.6; TT-02, TT-05, PR-06)"
+@any_posting,"*","Any active posting account (correct account in TT-34; final account per evidence in TT-33)"
+@original_debit,"","The account debited on the original entry named by linked_journal_id (TT-34, VR-49)"

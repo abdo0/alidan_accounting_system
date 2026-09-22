@@ -1,0 +1,55 @@
+"FS Line ID",Statement,"Line (EN)","Line (AR)","Account selector",Sign,"Display order","Subtotal of"
+SFP-A-010,SFP,"Cash & Banks","النقد والمصارف",111001-111040,1,10,SFP-A-900
+SFP-A-020,SFP,"Receivables & Advances","الذمم المدينة والسلف","112001-112069, 112090",1,20,SFP-A-900
+SFP-A-025,SFP,"Personal Receivables from Individuals","الذمم المدينة الشخصية على الأفراد",112101-112102,1,25,SFP-A-900
+SFP-A-030,SFP,Prepayments,"المصروفات المدفوعة مقدماً",113001-113009,1,30,SFP-A-900
+SFP-A-040,SFP,"Concession Assets under Construction","أصول الامتياز قيد الإنشاء",115001-115099,1,40,SFP-A-900
+SFP-A-050,SFP,"Investments & Project Interest Acquisitions","الاستثمارات والاستحواذ على حصص المشاريع",116001-116011,1,50,SFP-A-900
+SFP-A-060,SFP,"Concession & Operating Rights","حقوق الامتياز والتشغيل","117001, 117002",1,60,SFP-A-900
+SFP-A-070,SFP,"Less: Accumulated Amortization","ناقصاً: مجمع الإطفاء","117011, 117012",-1,70,SFP-A-900
+SFP-A-080,SFP,"Retained Fixed Assets","الأصول الثابتة المحتفظ بها",118001-118009,1,80,SFP-A-900
+SFP-A-090,SFP,"Less: Accumulated Depreciation","ناقصاً: مجمع الإهلاك",118011,-1,90,SFP-A-900
+SFP-A-900,SFP,"TOTAL ASSETS","إجمالي الموجودات",SUBTOTAL,1,99,
+SFP-L-110,SFP,"Trade & Contractor Payables","الذمم الدائنة التجارية والمقاولين","211001, 211002, 211003",-1,110,SFP-L-900
+SFP-L-115,SFP,"Retention Payable","المحتجزات المستحقة",211004,-1,115,SFP-L-900
+SFP-L-120,SFP,"Accruals & Other Payables","المصروفات المستحقة وذمم دائنة أخرى","211010, 211011, 211090",-1,120,SFP-L-900
+SFP-L-130,SFP,"Government Liabilities incl. 20% Share","الالتزامات الحكومية شاملة حصة 20٪",213001-213009,-1,130,SFP-L-900
+SFP-L-140,SFP,"Shareholder Loans","قروض المساهمين",221001-221004,-1,140,SFP-L-900
+SFP-L-150,SFP,"Shareholder Current Accounts","الحسابات الجارية للمساهمين",222001-222004,-1,150,SFP-L-900
+SFP-L-900,SFP,"TOTAL LIABILITIES","إجمالي المطلوبات",SUBTOTAL,-1,199,
+SFP-E-210,SFP,"Registered Capital","رأس المال المسجل",310001-310004,-1,210,SFP-E-900
+SFP-E-220,SFP,"Capital Contributions Pending Registration","مساهمات رأسمالية قيد التسجيل",310010,-1,220,SFP-E-900
+SFP-E-230,SFP,Reserves,الاحتياطيات,310020,-1,230,SFP-E-900
+SFP-E-240,SFP,"Retained Earnings","الأرباح المدوّرة",310030,-1,240,SFP-E-900
+SFP-E-250,SFP,"Current-Period Result","نتيجة الفترة الجارية","COMPUTED = PL-900 (310040 is used only after the year-end transfer)",-1,250,SFP-E-900
+SFP-E-900,SFP,"TOTAL EQUITY","إجمالي حقوق الملكية",SUBTOTAL,-1,299,
+SFP-CHK,SFP,"CHECK: Assets − (Liabilities + Equity) = 0","التحقق: الموجودات − (المطلوبات + حقوق الملكية) = صفر",CONTROL,1,999,
+PL-010,PL,"Gross Project Revenue","إجمالي إيرادات المشروع",410001-410009,-1,10,PL-030
+PL-020,PL,"Government Revenue Share – 20%","حصة الإيراد الحكومية – 20٪",510001,1,20,PL-030
+PL-030,PL,"NET RETAINED REVENUE","صافي الإيراد المحتفظ به",SUBTOTAL,-1,30,PL-050
+PL-040,PL,"Direct Operating Costs","التكاليف التشغيلية المباشرة",510010-510019,1,40,PL-050
+PL-050,PL,"GROSS OPERATING RESULT","مجمل نتيجة التشغيل",SUBTOTAL,-1,50,PL-900
+PL-060,PL,"Administrative Expenses","المصروفات الإدارية","610001-610015, 610019",1,60,PL-900
+PL-070,PL,"Depreciation & Amortization","الإهلاك والإطفاء","610016, 610017",1,70,PL-900
+PL-900,PL,"NET RESULT FOR THE PERIOD","صافي نتيجة الفترة",SUBTOTAL,-1,99,
+CF-O-010,CF,"Net result for the period","صافي نتيجة الفترة",PL-900,1,10,CF-O-900
+CF-O-020,CF,"Adjustment: depreciation & amortization","تعديل: الإهلاك والإطفاء","610016, 610017",1,20,CF-O-900
+CF-O-030,CF,"Movement in receivables, advances and prepayments","حركة الذمم والسلف والمدفوع مقدماً","112*, 113*",-1,30,CF-O-900
+CF-O-040,CF,"Movement in payables and accruals","حركة الذمم الدائنة والمستحقات","211*, 213*",1,40,CF-O-900
+CF-O-900,CF,"NET CASH FROM OPERATING ACTIVITIES","صافي النقد من الأنشطة التشغيلية",SUBTOTAL,1,99,CF-900
+CF-I-110,CF,"Additions to Concession Assets under Construction","الإضافات إلى أصول الامتياز قيد الإنشاء",115*,-1,110,CF-I-900
+CF-I-120,CF,"Project interest acquisitions","الاستحواذ على حصص المشاريع",116*,-1,120,CF-I-900
+CF-I-130,CF,"Purchases of retained fixed assets","شراء الأصول الثابتة المحتفظ بها",118001-118009,-1,130,CF-I-900
+CF-I-900,CF,"NET CASH USED IN INVESTING ACTIVITIES","صافي النقد المستخدم في الأنشطة الاستثمارية",SUBTOTAL,1,199,CF-900
+CF-F-210,CF,"Shareholder funding received","تمويل المساهمين المستلم","221*, 222*",1,210,CF-F-900
+CF-F-220,CF,"Capital contributions","المساهمات الرأسمالية",310001-310010,1,220,CF-F-900
+CF-F-230,CF,"Third-party funding","تمويل من أطراف أخرى",211090,1,230,CF-F-900
+CF-F-900,CF,"NET CASH FROM FINANCING ACTIVITIES","صافي النقد من الأنشطة التمويلية",SUBTOTAL,1,299,CF-900
+CF-900,CF,"NET MOVEMENT IN CASH & BANKS","صافي الحركة في النقد والمصارف",SUBTOTAL,1,900,
+CF-CHK,CF,"CHECK: movement = closing 111* less opening 111*","التحقق: الحركة = الرصيد الختامي ناقص الافتتاحي للحسابات 111",CONTROL,1,999,
+SCE-010,SCE,"Opening balance","الرصيد الافتتاحي",310*,-1,10,
+SCE-020,SCE,"Capital contributed in the period","رأس المال المساهم به خلال الفترة","310001-310010 period movement",-1,20,
+SCE-030,SCE,"Loan converted to equity","قرض محوّل إلى رأس مال","310010 from TT-37",-1,30,
+SCE-040,SCE,"Transfer to reserves","المحوّل إلى الاحتياطيات","310020 period movement",-1,40,
+SCE-050,SCE,"Result for the period","نتيجة الفترة",PL-900,-1,50,
+SCE-900,SCE,"CLOSING EQUITY","حقوق الملكية الختامية",SUBTOTAL,-1,99,

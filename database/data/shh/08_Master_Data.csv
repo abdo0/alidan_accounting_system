@@ -1,0 +1,18 @@
+Category,Code,"Name (EN)","Name (AR)","Role / Category","Linked Accounts",Note
+Shareholder,SH-01,"Mr. Mohammed Abdul Redha Eidan Al-Shammari","السيد محمد عبد الرضا عيدان الشمري","Principal shareholder & approved project financier","Loan 221001 · Current 222001 · Capital 310001",
+Shareholder,SH-02,"Mr. Samer Kareem Dahham","السيد سامر كريم دحام",Shareholder,"Loan 221002 · Current 222002 · Capital 310002",
+Shareholder,SH-03,"Mr. Hussein Zahrawi Hatem","السيد حسين زهراوي حاتم",Shareholder,"Loan 221003 · Current 222003 · Capital 310003",
+Shareholder,SH-04,"Mr. Hussam Fakher Jallab","السيد حسام فاخر جلاب",Shareholder,"Loan 221004 · Current 222004 · Capital 310004",
+"Advance Holder",P-01,"Mr. Abdul Hamid Haylan Hawshi (Abu Sajad)","السيد عبد الحميد هيلان حوشي (أبو سجاد)","Custodian / responsible person","Advances 112030 (active) · 112031 (inactive) · 112032 (active) · Personal receivable 112101","Responsibility centre RC-01"
+"Advance Holder",P-02,"Mr. Yas Jassim Muslim (Abu Ahmed)","السيد ياس جاسم مسلم (أبو أحمد)","Custodian / responsible person","Advances 112035 (active) · 112036 (inactive) · 112037 (active) · Personal receivable 112102","Responsibility centre RC-02"
+"Contractor / Supplier",CN-01,"Alliance of Taj Al-Marwa Co. & Dar Al-Ataa Co.","تحالف شركة تاج المروة وشركة دار العطاء","Main Construction Contractor",,"File 2 note: verify whether contracted as one alliance or two separate entities before finalizing sub-accounts. File 1 carries the whole IQD 20,500,000,000 net in 112020 pending certified settlement."
+"Contractor / Supplier",CN-02,"Noor Dur Al-Faisal Company","شركة نور در الفيصل",Contractor,,"File 1 reclassification log records corrections affecting this counterparty."
+"Contractor / Supplier",CN-03,"Ard Al-Aamal Company (Business Land)","شركة أرض الأعمال","Fiber-optic & Electronic Equipment Contractor",,"Supplier statement is the governing source; three-level control total IQD 339,648,730. Treated as direct shareholder funding, NOT a supplier advance."
+"Contractor / Supplier",CN-04,"Deraa Al-Khaleej Security Services Company","شركة درع الخليج للخدمات الأمنية","Security Services",,"DF-161 carries no amount at source — open 2026 item."
+"Contractor / Supplier",CN-05,"Future Wave Company","شركة الموجة المستقبلية","Supplier / Services",,
+"Contractor / Supplier",CN-06,"University of Basra Consulting Office / Infinity Space Office","مكتب جامعة البصرة الاستشاري / مكتب إنفينيتي سبيس","Engineering Consulting Office",,
+"Contractor / Supplier",CN-07,"Independent Designers","مصممون مستقلون","Design Services",,
+"Contractor / Supplier",CN-08,Freelancers,"متعاقدون أفراد","Freelance Services",,
+"Contractor / Supplier",CN-09,"Consulting Bureau – Iraqi Engineers Union","المكتب الاستشاري لنقابة المهندسين","Engineering Consulting Office",,"Appears as a funding recipient in the File 1 Journal Ledger (8 entries)."
+"Contractor / Supplier",CN-10,"New Capital Company","شركة العاصمة الجديدة",Services,,"Appears in the Direct Funding Ledger (DF-158/159/160) as monthly support."
+"Contractor / Supplier",CN-11,"Gulf Shield Security Company","شركة درع الخليج للخدمات الأمنية","Security Services",,"Same counterparty family as CN-04 — deduplicate at migration."

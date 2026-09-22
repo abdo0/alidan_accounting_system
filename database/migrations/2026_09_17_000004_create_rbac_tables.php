@@ -9,11 +9,16 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Role-based access (M17, Document C tab 19). A grant carries a scope: All, or
+     * Own -- the Accounting Data Entry role sees and edits only what it created.
+     * Scope is evaluated server-side in the services, never only in the UI.
+     */
     public function up(): void
     {
         Schema::create('permissions', function (Blueprint $table): void {
             $table->id();
-            $table->string('name', 100)->unique();       // ledger.post, ap.approve, ...
+            $table->string('name', 100)->unique();
             $table->string('group', 50);
             $table->string('label_en', 150);
             $table->string('label_ar', 150)->nullable();
@@ -23,23 +28,27 @@ return new class extends Migration
 
         Schema::create('roles', function (Blueprint $table): void {
             $table->id();
+            $table->string('code', 20)->nullable()->unique();   // ROLE-01 ... ROLE-08
             $table->string('name', 60)->unique();
             $table->string('label_en', 120);
             $table->string('label_ar', 120)->nullable();
             $table->text('description')->nullable();
-            $table->boolean('is_read_only')->default(false);   // the auditor role
-            $table->boolean('is_system')->default(false);      // cannot be deleted
-            $table->boolean('requires_mfa')->default(false);   // posting/approval roles
+            $table->boolean('is_read_only')->default(false);
+            $table->boolean('is_system')->default(false);
+            $table->boolean('requires_mfa')->default(false);
             $table->timestampsTz();
         });
 
-        Schema::create('permission_role', function (Blueprint $table): void {
+        Schema::create('role_permissions', function (Blueprint $table): void {
             $table->foreignId('role_id')->constrained()->cascadeOnDelete();
             $table->foreignId('permission_id')->constrained()->cascadeOnDelete();
+            $table->string('scope', 12)->default('all');
             $table->primary(['role_id', 'permission_id']);
         });
 
-        Schema::create('role_user', function (Blueprint $table): void {
+        DB::statement("ALTER TABLE role_permissions ADD CONSTRAINT role_permissions_scope_valid CHECK (scope IN ('all','own','conditional'))");
+
+        Schema::create('user_roles', function (Blueprint $table): void {
             $table->foreignId('role_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('granted_by')->nullable()->constrained('users');
@@ -47,34 +56,15 @@ return new class extends Migration
             $table->primary(['role_id', 'user_id']);
         });
 
-        // Segregation of duties will be overridden in a 3-10 person finance team
-        // (assumption A-06). The design's answer is that overrides are logged and
-        // surfaced, not that they are prevented.
-        Schema::create('sod_overrides', function (Blueprint $table): void {
-            $table->id();
-            $table->string('document_type', 40);
-            $table->unsignedBigInteger('document_id');
-            $table->string('rule', 60);                  // creator_is_approver, ...
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('authorised_by')->constrained('users');
-            $table->text('justification');
-            $table->text('compensating_control')->nullable();
-            $table->timestampTz('occurred_at')->useCurrent();
-
-            $table->index(['document_type', 'document_id']);
-            $table->index('occurred_at');
-        });
-
-        foreach (['permissions', 'roles', 'permission_role', 'role_user', 'sod_overrides'] as $table) {
+        foreach (['permissions', 'roles', 'role_permissions', 'user_roles'] as $table) {
             DB::statement('SELECT attach_audit(?)', [$table]);
         }
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('sod_overrides');
-        Schema::dropIfExists('role_user');
-        Schema::dropIfExists('permission_role');
+        Schema::dropIfExists('user_roles');
+        Schema::dropIfExists('role_permissions');
         Schema::dropIfExists('roles');
         Schema::dropIfExists('permissions');
     }

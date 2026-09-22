@@ -4,89 +4,75 @@ declare(strict_types=1);
 
 namespace App\Domain\Ledger\Posting;
 
-use App\Domain\Ledger\JournalEntry;
+use App\Domain\Ledger\JournalHeader;
+use App\Domain\Ledger\JournalLine;
 use Illuminate\Support\Facades\DB;
 
 /**
  * Tamper evidence: each posted entry stores SHA256(previous hash || canonical
- * payload), so an auditor can verify the chain independently.
+ * payload), chained per company and fiscal year -- the grain of the JV sequence,
+ * whose counter row is already locked while posting, so the chain cannot fork.
  *
- * Chained per (entity, journal, fiscal year) -- the same grain as the gapless
- * sequence counter. A single global chain would fork under concurrent posting: two
- * transactions read the same head, both chain from it, and the verification walk
- * breaks permanently and undetectably. Because the sequencer already holds that
- * counter row FOR UPDATE, this grain costs no additional locking.
- *
- * The payload includes the lines and excludes clock values, or re-verification of a
- * historical entry would never reproduce the hash.
+ * The payload includes the lines and excludes clock values, so re-verification of
+ * a historical entry reproduces the hash.
  */
 final class EntryHasher
 {
-    /**
-     * Computes the chain links without writing them. The caller must persist them in
-     * the same statement that marks the entry posted -- after that moment the row is
-     * immutable, and a follow-up UPDATE is refused by the database.
-     *
-     * @return array{prev: string, hash: string}
-     */
-    public function chain(JournalEntry $entry, int $fiscalYearId): array
+    /** @return array{prev: string, hash: string} */
+    public function chain(JournalHeader $header, string $jvNo): array
     {
         $previous = DB::selectOne(
-            'SELECT je.entry_hash
-               FROM journal_entries je
-               JOIN fiscal_periods fp ON fp.id = je.fiscal_period_id
-              WHERE je.entity_id = ?
-                AND je.journal_id = ?
-                AND fp.fiscal_year_id = ?
-                AND je.entry_hash IS NOT NULL
-                AND je.id <> ?
-              ORDER BY je.id DESC
+            'SELECT jh.entry_hash
+               FROM journal_headers jh
+               JOIN accounting_periods ap ON ap.id = jh.period_id
+              WHERE jh.company_id = ?
+                AND ap.fiscal_year_id = ?
+                AND jh.entry_hash IS NOT NULL
+                AND jh.id <> ?
+              ORDER BY jh.posted_at DESC, jh.id DESC
               LIMIT 1',
-            [$entry->entity_id, $entry->journal_id, $fiscalYearId, $entry->id]
+            [$header->company_id, $header->period->fiscal_year_id, $header->id],
         );
 
         $previousHash = $previous->entry_hash ?? str_repeat('0', 64);
 
         return [
             'prev' => $previousHash,
-            'hash' => hash('sha256', $previousHash.$this->canonicalPayload($entry)),
+            'hash' => hash('sha256', $previousHash.$this->canonicalPayload($header, $jvNo)),
         ];
     }
 
-    public function canonicalPayload(JournalEntry $entry): string
+    public function canonicalPayload(JournalHeader $header, ?string $jvNo = null): string
     {
-        $lines = $entry->lines
+        $lines = $header->lines
             ->sortBy('line_no')
-            ->map(fn ($line): string => implode(':', [
+            ->map(fn (JournalLine $line): string => implode(':', [
                 $line->line_no,
                 $line->account_id,
-                $line->cost_centre_id ?? '',
-                $line->project_id ?? '',
-                $line->currency_code,
-                (string) $line->debit_amount,
-                (string) $line->credit_amount,
+                $line->project_id,
+                $line->cost_center_id ?? '',
+                $line->counterparty_id ?? '',
+                $line->debit,
+                $line->credit,
             ]))
             ->implode('|');
 
         return implode('#', [
-            $entry->entity_id,
-            $entry->journal_id,
-            $entry->fiscal_period_id,
-            (string) $entry->entry_no,
-            $entry->entry_date->toDateString(),
-            $entry->description,
-            $entry->currency_code,
-            (string) $entry->total_debit,
-            (string) $entry->total_credit,
+            $header->company_id,
+            $jvNo ?? $header->jv_no,
+            $header->transaction_type_id,
+            $header->posting_date->toDateString(),
+            $header->txn_date?->toDateString() ?? '',
+            $header->description_ar,
+            $header->source_reference ?? '',
             $lines,
         ]);
     }
 
-    /** Recomputes the chain for verification; used by the integrity report. */
-    public function verify(JournalEntry $entry): bool
+    public function verify(JournalHeader $header): bool
     {
-        $expected = hash('sha256', (string) $entry->prev_entry_hash.$this->canonicalPayload($entry));
+        $expected = hash('sha256', (string) $header->prev_entry_hash.$this->canonicalPayload($header));
 
-        return hash_equals((string) $entry->entry_hash, $expected);
+        return hash_equals((string) $header->entry_hash, $expected);
     }
 }
