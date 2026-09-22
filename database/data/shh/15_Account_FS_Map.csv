@@ -1,0 +1,144 @@
+"Account Code","Account (EN)","Account (AR)","Account Group","FS Line ID",Statement,"FS Line (EN)","FS Line (AR)",Sign,"Display order","Normal balance",Active
+111001,"Administrative Cash Box","صندوق نقدي إداري","Cash & Banks",SFP-A-010,SFP,"Cash & Banks","النقد والمصارف",1,10,Dr,Active
+111002,"Yousfia exchane yard  Project Safe","خزنة مشروع ساحة التبادل ( اليوسفية )","Cash & Banks",SFP-A-010,SFP,"Cash & Banks","النقد والمصارف",1,10,Dr,Active
+111003,"Rashdia exchange yard safe  Project Safe","خزنة مشروع ساحة التبادل ( الراشدية )","Cash & Banks",SFP-A-010,SFP,"Cash & Banks","النقد والمصارف",1,10,Dr,Active
+111010,"Bank Account – Main","حساب مصرفي - رئيسي","Cash & Banks",SFP-A-010,SFP,"Cash & Banks","النقد والمصارف",1,10,Dr,Active
+111011,"Bank Account – Secondary","حساب مصرفي - ثانوي","Cash & Banks",SFP-A-010,SFP,"Cash & Banks","النقد والمصارف",1,10,Dr,Active
+111020,"Cash in Transit","نقد قيد التحويل","Cash & Banks",SFP-A-010,SFP,"Cash & Banks","النقد والمصارف",1,10,Dr,Active
+111030,"Petty Cash","مصروف نثري (سلفة مستديمة)","Cash & Banks",SFP-A-010,SFP,"Cash & Banks","النقد والمصارف",1,10,Dr,Active
+111040,"Undeposited Collections","متحصلات غير مودعة","Cash & Banks",SFP-A-010,SFP,"Cash & Banks","النقد والمصارف",1,10,Dr,Active
+112001,"Trade Receivables","ذمم مدينة تجارية","Receivables & Advances",SFP-A-020,SFP,"Receivables & Advances","الذمم المدينة والسلف",1,20,Dr,Active
+112010,"Employee Advances","سلف الموظفين","Receivables & Advances",SFP-A-020,SFP,"Receivables & Advances","الذمم المدينة والسلف",1,20,Dr,Active
+112020,"Contractor Advances","سلف المقاولين","Receivables & Advances",SFP-A-020,SFP,"Receivables & Advances","الذمم المدينة والسلف",1,20,Dr,Active
+112021,"Supplier Advances","سلف الموردين","Receivables & Advances",SFP-A-020,SFP,"Receivables & Advances","الذمم المدينة والسلف",1,20,Dr,Active
+112030,"Advance – Abdul Hamid Hailan Hoshy ( Abo sajad )","سلفة عبد الحميد هيلان حوشي ( أبو سجاد )","Receivables & Advances",SFP-A-020,SFP,"Receivables & Advances","الذمم المدينة والسلف",1,20,Dr,Active
+112031,"Advance – Abdul Hamid Haylan (Operating)","سلفة عبد الحميد حيلان (تشغيل)","Receivables & Advances",SFP-A-020,SFP,"Receivables & Advances","الذمم المدينة والسلف",1,20,Dr,Inactive
+112032,"Advance – Abdul Hamid Haylan (Administrative)","سلفة عبد الحميد حيلان (إدارية)","Receivables & Advances",SFP-A-020,SFP,"Receivables & Advances","الذمم المدينة والسلف",1,20,Dr,Active
+112035,"Advance – Yas Jassim Muslem ( Abo Ahmed)","سلفة ياس جاسم مسلم ( أبو احمد )","Receivables & Advances",SFP-A-020,SFP,"Receivables & Advances","الذمم المدينة والسلف",1,20,Dr,Active
+112036,"Advance – Yas Jassim (Operating)","سلفة ياس جاسم (تشغيل)","Receivables & Advances",SFP-A-020,SFP,"Receivables & Advances","الذمم المدينة والسلف",1,20,Dr,Inactive
+112037,"Advance – Yas Jassim (Administrative)","سلفة ياس جاسم (إدارية)","Receivables & Advances",SFP-A-020,SFP,"Receivables & Advances","الذمم المدينة والسلف",1,20,Dr,Active
+112040,"Refundable Deposits","تأمينات مستردة","Receivables & Advances",SFP-A-020,SFP,"Receivables & Advances","الذمم المدينة والسلف",1,20,Dr,Active
+112050,"Other Receivables","ذمم مدينة أخرى","Receivables & Advances",SFP-A-020,SFP,"Receivables & Advances","الذمم المدينة والسلف",1,20,Dr,Active
+112060,"Employee Custody 01","عهدة موظف 01","Receivables & Advances",SFP-A-020,SFP,"Receivables & Advances","الذمم المدينة والسلف",1,20,Dr,Active
+112061,"Employee Custody 02","عهدة موظف 02","Receivables & Advances",SFP-A-020,SFP,"Receivables & Advances","الذمم المدينة والسلف",1,20,Dr,Active
+112062,"Employee Custody 03","عهدة موظف 03","Receivables & Advances",SFP-A-020,SFP,"Receivables & Advances","الذمم المدينة والسلف",1,20,Dr,Active
+112063,"Employee Custody 04","عهدة موظف 04","Receivables & Advances",SFP-A-020,SFP,"Receivables & Advances","الذمم المدينة والسلف",1,20,Dr,Active
+112064,"Employee Custody 05","عهدة موظف 05","Receivables & Advances",SFP-A-020,SFP,"Receivables & Advances","الذمم المدينة والسلف",1,20,Dr,Active
+112065,"Employee Custody 06","عهدة موظف 06","Receivables & Advances",SFP-A-020,SFP,"Receivables & Advances","الذمم المدينة والسلف",1,20,Dr,Active
+112066,"Employee Custody 07","عهدة موظف 07","Receivables & Advances",SFP-A-020,SFP,"Receivables & Advances","الذمم المدينة والسلف",1,20,Dr,Active
+112067,"Employee Custody 08","عهدة موظف 08","Receivables & Advances",SFP-A-020,SFP,"Receivables & Advances","الذمم المدينة والسلف",1,20,Dr,Active
+112068,"Employee Custody 09","عهدة موظف 09","Receivables & Advances",SFP-A-020,SFP,"Receivables & Advances","الذمم المدينة والسلف",1,20,Dr,Active
+112069,"Employee Custody 10","عهدة موظف 10","Receivables & Advances",SFP-A-020,SFP,"Receivables & Advances","الذمم المدينة والسلف",1,20,Dr,Active
+112090,"Suspense & Clearing Account","حساب وسيط وتسوية","Receivables & Advances",SFP-A-020,SFP,"Receivables & Advances","الذمم المدينة والسلف",1,20,Dr,Active
+112101,"Personal Receivable – Abdul Hamid Hailan","ذمم مدينة شخصية – عبد الحميد هيلان","Personal Receivables from Individuals",SFP-A-025,SFP,"Personal Receivables from Individuals","الذمم المدينة الشخصية على الأفراد",1,25,Dr,Active
+112102,"Personal Receivable – Yas Jassim Muslim","ذمم مدينة شخصية – ياس جاسم مسلم","Personal Receivables from Individuals",SFP-A-025,SFP,"Personal Receivables from Individuals","الذمم المدينة الشخصية على الأفراد",1,25,Dr,Active
+113001,"Prepaid Insurance","تأمين مدفوع مقدماً",Prepayments,SFP-A-030,SFP,Prepayments,"المصروفات المدفوعة مقدماً",1,30,Dr,Active
+113002,"Prepaid Rent","إيجار مدفوع مقدماً",Prepayments,SFP-A-030,SFP,Prepayments,"المصروفات المدفوعة مقدماً",1,30,Dr,Active
+113003,"Prepaid Licenses","رخص مدفوعة مقدماً",Prepayments,SFP-A-030,SFP,Prepayments,"المصروفات المدفوعة مقدماً",1,30,Dr,Active
+113004,"Prepaid Services","خدمات مدفوعة مقدماً",Prepayments,SFP-A-030,SFP,Prepayments,"المصروفات المدفوعة مقدماً",1,30,Dr,Active
+113009,"Other Prepayments","مصروفات أخرى مدفوعة مقدماً",Prepayments,SFP-A-030,SFP,Prepayments,"المصروفات المدفوعة مقدماً",1,30,Dr,Active
+115001,"Land Acquisition Cost – Government-Owned Project Site","كلفة اقتناء أرض موقع المشروع المملوك للدولة","Concession Assets under Construction",SFP-A-040,SFP,"Concession Assets under Construction","أصول الامتياز قيد الإنشاء",1,40,Dr,Active
+115002,"Land Registration & Related Costs","تكاليف تسجيل الأرض وما يتصل بها","Concession Assets under Construction",SFP-A-040,SFP,"Concession Assets under Construction","أصول الامتياز قيد الإنشاء",1,40,Dr,Active
+115010,"Site Preparation","تهيئة الموقع","Concession Assets under Construction",SFP-A-040,SFP,"Concession Assets under Construction","أصول الامتياز قيد الإنشاء",1,40,Dr,Active
+115020,"External Road Works","أعمال الطرق الخارجية","Concession Assets under Construction",SFP-A-040,SFP,"Concession Assets under Construction","أصول الامتياز قيد الإنشاء",1,40,Dr,Active
+115021,"Internal Roads","الطرق الداخلية","Concession Assets under Construction",SFP-A-040,SFP,"Concession Assets under Construction","أصول الامتياز قيد الإنشاء",1,40,Dr,Active
+115022,"Sub base Yard & Parking Infrastructure","الحصى الخابط بنية الساحات والمواقف","Concession Assets under Construction",SFP-A-040,SFP,"Concession Assets under Construction","أصول الامتياز قيد الإنشاء",1,40,Dr,Active
+115031,"Buildings & Facilities","المباني والمرافق","Concession Assets under Construction",SFP-A-040,SFP,"Concession Assets under Construction","أصول الامتياز قيد الإنشاء",1,40,Dr,Active
+115032,"Earthworks, Excavation & Site Grading","الأعمال الترابية والحفريات وتسوية الموقع","Civil Works (Parent)",SFP-A-040,SFP,"Concession Assets under Construction","أصول الامتياز قيد الإنشاء",1,40,Dr,Active
+115033,"Security Fence & Boundary Walls","السياج الأمني والأسوار المحيطية","Civil Works (Parent)",SFP-A-040,SFP,"Concession Assets under Construction","أصول الامتياز قيد الإنشاء",1,40,Dr,Active
+115034,"Concrete Works & Foundations","الأعمال الكونكريتية والأسس","Civil Works (Parent)",SFP-A-040,SFP,"Concession Assets under Construction","أصول الامتياز قيد الإنشاء",1,40,Dr,Active
+115035,"Loading Platforms, Ramps & Civil Structures","منصات التفريغ والرامبات والمنشآت المدنية","Civil Works (Parent)",SFP-A-040,SFP,"Concession Assets under Construction","أصول الامتياز قيد الإنشاء",1,40,Dr,Active
+115036,"Stormwater Drainage & Culverts","تصريف مياه الأمطار والعبارات","Civil Works (Parent)",SFP-A-040,SFP,"Concession Assets under Construction","أصول الامتياز قيد الإنشاء",1,40,Dr,Active
+115037,"Kerbs, Sidewalks & Civil Paving","القالب الجانبي والأرصفة والتبليط المدني","Civil Works (Parent)",SFP-A-040,SFP,"Concession Assets under Construction","أصول الامتياز قيد الإنشاء",1,40,Dr,Active
+115039,"Other Civil Works","أعمال مدنية أخرى","Civil Works (Parent)",SFP-A-040,SFP,"Concession Assets under Construction","أصول الامتياز قيد الإنشاء",1,40,Dr,Active
+115040,"Electrical Works","الأعمال الكهربائية","Concession Assets under Construction",SFP-A-040,SFP,"Concession Assets under Construction","أصول الامتياز قيد الإنشاء",1,40,Dr,Active
+115041,"Mechanical Works","الأعمال الميكانيكية","Concession Assets under Construction",SFP-A-040,SFP,"Concession Assets under Construction","أصول الامتياز قيد الإنشاء",1,40,Dr,Active
+115042,Lighting,الإنارة,"Concession Assets under Construction",SFP-A-040,SFP,"Concession Assets under Construction","أصول الامتياز قيد الإنشاء",1,40,Dr,Active
+115043,"Water & Sewerage","الماء والصرف الصحي","Concession Assets under Construction",SFP-A-040,SFP,"Concession Assets under Construction","أصول الامتياز قيد الإنشاء",1,40,Dr,Active
+115050,"Fiber & Networks","الألياف والشبكات","Concession Assets under Construction",SFP-A-040,SFP,"Concession Assets under Construction","أصول الامتياز قيد الإنشاء",1,40,Dr,Active
+115051,"Electronic Systems","الأنظمة الإلكترونية","Concession Assets under Construction",SFP-A-040,SFP,"Concession Assets under Construction","أصول الامتياز قيد الإنشاء",1,40,Dr,Active
+115052,"CCTV & Security Systems","أنظمة المراقبة والأمن","Concession Assets under Construction",SFP-A-040,SFP,"Concession Assets under Construction","أصول الامتياز قيد الإنشاء",1,40,Dr,Active
+115053,"Gates & Access Control","البوابات والتحكم بالدخول","Concession Assets under Construction",SFP-A-040,SFP,"Concession Assets under Construction","أصول الامتياز قيد الإنشاء",1,40,Dr,Active
+115060,"Machinery & Integrated Equipment","المكائن والمعدات المتكاملة","Concession Assets under Construction",SFP-A-040,SFP,"Concession Assets under Construction","أصول الامتياز قيد الإنشاء",1,40,Dr,Active
+115070,"Engineering Design","التصميم الهندسي","Concession Assets under Construction",SFP-A-040,SFP,"Concession Assets under Construction","أصول الامتياز قيد الإنشاء",1,40,Dr,Active
+115071,"Consulting Services","الخدمات الاستشارية","Concession Assets under Construction",SFP-A-040,SFP,"Concession Assets under Construction","أصول الامتياز قيد الإنشاء",1,40,Dr,Active
+115072,"Engineering Supervision","الإشراف الهندسي","Concession Assets under Construction",SFP-A-040,SFP,"Concession Assets under Construction","أصول الامتياز قيد الإنشاء",1,40,Dr,Active
+115080,"Government Approvals","الموافقات الحكومية","Concession Assets under Construction",SFP-A-040,SFP,"Concession Assets under Construction","أصول الامتياز قيد الإنشاء",1,40,Dr,Active
+115090,"Eligible Pre-Operating Costs","تكاليف ما قبل التشغيل المؤهلة","Concession Assets under Construction",SFP-A-040,SFP,"Concession Assets under Construction","أصول الامتياز قيد الإنشاء",1,40,Dr,Active
+115099,"Other Capitalizable Project Costs","تكاليف مشروع رأسمالية أخرى","Concession Assets under Construction",SFP-A-040,SFP,"Concession Assets under Construction","أصول الامتياز قيد الإنشاء",1,40,Dr,Active
+116001,"Advance Payments for Acquisition of PRJ-02 Interest","دفعات مقدمة للاستحواذ على حصة مشروع الراشدية","Investments & Project Interest Acquisitions",SFP-A-050,SFP,"Investments & Project Interest Acquisitions","الاستثمارات والاستحواذ على حصص المشاريع",1,50,Dr,Active
+116002,"Investment – Acquisition of PRJ-02 Interest (Completed)","استثمار – الاستحواذ على حصة مشروع الراشدية (منجز)","Investments & Project Interest Acquisitions",SFP-A-050,SFP,"Investments & Project Interest Acquisitions","الاستثمارات والاستحواذ على حصص المشاريع",1,50,Dr,Active
+116011,"Acquisition of Abdul Hamid Hailan's Interest – PRJ-02","الاستحواذ على حصة عبد الحميد هيلان – مشروع الراشدية","Investments & Project Interest Acquisitions",SFP-A-050,SFP,"Investments & Project Interest Acquisitions","الاستثمارات والاستحواذ على حصص المشاريع",1,50,Dr,Active
+117001,"Concession & Operating Right – PRJ-01","حق الامتياز والتشغيل - PRJ-01","Concession Rights & Amortization",SFP-A-060,SFP,"Concession & Operating Rights","حقوق الامتياز والتشغيل",1,60,Dr,Active
+117002,"Concession & Operating Right – PRJ-02","حق الامتياز والتشغيل - PRJ-02","Concession Rights & Amortization",SFP-A-060,SFP,"Concession & Operating Rights","حقوق الامتياز والتشغيل",1,60,Dr,Active
+117011,"Accumulated Amortization – PRJ-01","مجمع إطفاء حق الامتياز - PRJ-01","Concession Rights & Amortization",SFP-A-070,SFP,"Less: Accumulated Amortization","ناقصاً: مجمع الإطفاء",-1,70,Dr,Active
+117012,"Accumulated Amortization – PRJ-02","مجمع إطفاء حق الامتياز - PRJ-02","Concession Rights & Amortization",SFP-A-070,SFP,"Less: Accumulated Amortization","ناقصاً: مجمع الإطفاء",-1,70,Dr,Active
+118001,Vehicles,المركبات,"Retained Fixed Assets",SFP-A-080,SFP,"Retained Fixed Assets","الأصول الثابتة المحتفظ بها",1,80,Dr,Active
+118002,"Movable Machinery","مكائن منقولة","Retained Fixed Assets",SFP-A-080,SFP,"Retained Fixed Assets","الأصول الثابتة المحتفظ بها",1,80,Dr,Active
+118003,Computers,الحواسيب,"Retained Fixed Assets",SFP-A-080,SFP,"Retained Fixed Assets","الأصول الثابتة المحتفظ بها",1,80,Dr,Active
+118004,"Office Equipment","معدات مكتبية","Retained Fixed Assets",SFP-A-080,SFP,"Retained Fixed Assets","الأصول الثابتة المحتفظ بها",1,80,Dr,Active
+118005,Furniture,الأثاث,"Retained Fixed Assets",SFP-A-080,SFP,"Retained Fixed Assets","الأصول الثابتة المحتفظ بها",1,80,Dr,Active
+118006,"Independent Software","برمجيات مستقلة","Retained Fixed Assets",SFP-A-080,SFP,"Retained Fixed Assets","الأصول الثابتة المحتفظ بها",1,80,Dr,Active
+118009,"Other Retained Assets","أصول محتفظ بها أخرى","Retained Fixed Assets",SFP-A-080,SFP,"Retained Fixed Assets","الأصول الثابتة المحتفظ بها",1,80,Dr,Active
+118011,"Accumulated Depreciation – Retained Assets","مجمع إهلاك الأصول المحتفظ بها","Retained Fixed Assets",SFP-A-090,SFP,"Less: Accumulated Depreciation","ناقصاً: مجمع الإهلاك",-1,90,Dr,Active
+211001,"Trade Suppliers (Payable)","موردون تجاريون (دائنون)","Current Liabilities",SFP-L-110,SFP,"Trade & Contractor Payables","الذمم الدائنة التجارية والمقاولين",-1,110,Cr,Active
+211002,"Contractors Payable","مقاولون دائنون","Current Liabilities",SFP-L-110,SFP,"Trade & Contractor Payables","الذمم الدائنة التجارية والمقاولين",-1,110,Cr,Active
+211003,"Certified Works Payable","أعمال مصدّقة مستحقة الدفع","Current Liabilities",SFP-L-110,SFP,"Trade & Contractor Payables","الذمم الدائنة التجارية والمقاولين",-1,110,Cr,Active
+211004,"Retention Payable","محتجزات مستحقة الدفع","Current Liabilities",SFP-L-115,SFP,"Retention Payable","المحتجزات المستحقة",-1,115,Cr,Active
+211010,"Accrued Expenses","مصروفات مستحقة","Current Liabilities",SFP-L-120,SFP,"Accruals & Other Payables","المصروفات المستحقة وذمم دائنة أخرى",-1,120,Cr,Active
+211011,"Salaries Payable","رواتب مستحقة","Current Liabilities",SFP-L-120,SFP,"Accruals & Other Payables","المصروفات المستحقة وذمم دائنة أخرى",-1,120,Cr,Active
+211090,"Other Payables – Hassan Yaqoub","ذمم دائنة أخرى – حسن يعقوب","Current Liabilities",SFP-L-120,SFP,"Accruals & Other Payables","المصروفات المستحقة وذمم دائنة أخرى",-1,120,Cr,Active
+213001,"State Company for Land Transport – 20% Share Payable","الشركة العامة للنقل البري - حصة 20٪ مستحقة","Government Liabilities",SFP-L-130,SFP,"Government Liabilities incl. 20% Share","الالتزامات الحكومية شاملة حصة 20٪",-1,130,Cr,Active
+213002,"Taxes & Statutory Deductions Payable","ضرائب واستقطاعات قانونية مستحقة","Government Liabilities",SFP-L-130,SFP,"Government Liabilities incl. 20% Share","الالتزامات الحكومية شاملة حصة 20٪",-1,130,Cr,Active
+213009,"Other Government Liabilities","التزامات حكومية أخرى","Government Liabilities",SFP-L-130,SFP,"Government Liabilities incl. 20% Share","الالتزامات الحكومية شاملة حصة 20٪",-1,130,Cr,Active
+221001,"Shareholder Loan – Mohammed Abdul Redha Eidan Al-Shammari","قرض مساهم - محمد عبد الرضا عيدان الشمري","Shareholder Loans",SFP-L-140,SFP,"Shareholder Loans","قروض المساهمين",-1,140,Cr,Active
+221002,"Shareholder Loan – Samer Kareem Dahham","قرض مساهم - سامر كريم دحام","Shareholder Loans",SFP-L-140,SFP,"Shareholder Loans","قروض المساهمين",-1,140,Cr,Active
+221003,"Shareholder Loan – Hussein Zahrawi Hatem","قرض مساهم - حسين زهراوي حاتم","Shareholder Loans",SFP-L-140,SFP,"Shareholder Loans","قروض المساهمين",-1,140,Cr,Active
+221004,"Shareholder Loan – Hussam Fakher Jallab","قرض مساهم - حسام فاخر جلاب","Shareholder Loans",SFP-L-140,SFP,"Shareholder Loans","قروض المساهمين",-1,140,Cr,Active
+222001,"Shareholder Current Account – Mohammed Al-Shammari","حساب جاري مساهم - محمد الشمري","Shareholder Current Accounts",SFP-L-150,SFP,"Shareholder Current Accounts","الحسابات الجارية للمساهمين",-1,150,Cr,Active
+222002,"Shareholder Current Account – Samer Kareem","حساب جاري مساهم - سامر كريم","Shareholder Current Accounts",SFP-L-150,SFP,"Shareholder Current Accounts","الحسابات الجارية للمساهمين",-1,150,Cr,Active
+222003,"Shareholder Current Account – Hussein Zahrawi","حساب جاري مساهم - حسين زهراوي","Shareholder Current Accounts",SFP-L-150,SFP,"Shareholder Current Accounts","الحسابات الجارية للمساهمين",-1,150,Cr,Active
+222004,"Shareholder Current Account – Hussam Fakher","حساب جاري مساهم - حسام فاخر","Shareholder Current Accounts",SFP-L-150,SFP,"Shareholder Current Accounts","الحسابات الجارية للمساهمين",-1,150,Cr,Active
+310001,"Registered Capital – Mohammed Al-Shammari","رأس المال المسجل - محمد الشمري",Equity,SFP-E-210,SFP,"Registered Capital","رأس المال المسجل",-1,210,Cr,Active
+310002,"Registered Capital – Samer Kareem","رأس المال المسجل - سامر كريم",Equity,SFP-E-210,SFP,"Registered Capital","رأس المال المسجل",-1,210,Cr,Active
+310003,"Registered Capital – Hussein Zahrawi","رأس المال المسجل - حسين زهراوي",Equity,SFP-E-210,SFP,"Registered Capital","رأس المال المسجل",-1,210,Cr,Active
+310004,"Registered Capital – Hussam Fakher","رأس المال المسجل - حسام فاخر",Equity,SFP-E-210,SFP,"Registered Capital","رأس المال المسجل",-1,210,Cr,Active
+310010,"Capital Contributions Pending Registration","مساهمات رأسمالية قيد التسجيل",Equity,SFP-E-220,SFP,"Capital Contributions Pending Registration","مساهمات رأسمالية قيد التسجيل",-1,220,Cr,Active
+310020,Reserves,الاحتياطيات,Equity,SFP-E-230,SFP,Reserves,الاحتياطيات,-1,230,Cr,Active
+310030,"Retained Earnings","أرباح مدوّرة",Equity,SFP-E-240,SFP,"Retained Earnings","الأرباح المدوّرة",-1,240,Cr,Active
+310040,"Current-Year Result","نتيجة السنة الجارية",Equity,SFP-E-250,SFP,"Current-Period Result","نتيجة الفترة الجارية",-1,250,Cr,Active
+410001,"Truck Entry Fees","رسوم دخول الشاحنات",Revenue,PL-010,PL,"Gross Project Revenue","إجمالي إيرادات المشروع",-1,10,Cr,Active
+410002,"Yard Service Fees","رسوم خدمات الساحة",Revenue,PL-010,PL,"Gross Project Revenue","إجمالي إيرادات المشروع",-1,10,Cr,Active
+410003,"Handling Fees","رسوم المناولة",Revenue,PL-010,PL,"Gross Project Revenue","إجمالي إيرادات المشروع",-1,10,Cr,Active
+410004,"Parking Fees","رسوم المواقف",Revenue,PL-010,PL,"Gross Project Revenue","إجمالي إيرادات المشروع",-1,10,Cr,Active
+410005,"Rental Income – Shops & Facilities","إيرادات إيجار المحال والمرافق",Revenue,PL-010,PL,"Gross Project Revenue","إجمالي إيرادات المشروع",-1,10,Cr,Active
+410006,"Electronic Service Income","إيرادات الخدمات الإلكترونية",Revenue,PL-010,PL,"Gross Project Revenue","إجمالي إيرادات المشروع",-1,10,Cr,Active
+410009,"Other Project Operating Revenue","إيرادات تشغيلية أخرى للمشروع",Revenue,PL-010,PL,"Gross Project Revenue","إجمالي إيرادات المشروع",-1,10,Cr,Active
+510001,"Government Revenue Share – 20%","حصة الإيراد الحكومية - 20٪","Direct Operating Costs",PL-020,PL,"Government Revenue Share – 20%","حصة الإيراد الحكومية – 20٪",1,20,Dr,Active
+510010,"Direct Operating Salaries","رواتب تشغيلية مباشرة","Direct Operating Costs",PL-040,PL,"Direct Operating Costs","التكاليف التشغيلية المباشرة",1,40,Dr,Active
+510011,"Security Services","خدمات الأمن","Direct Operating Costs",PL-040,PL,"Direct Operating Costs","التكاليف التشغيلية المباشرة",1,40,Dr,Active
+510012,Fuel,الوقود,"Direct Operating Costs",PL-040,PL,"Direct Operating Costs","التكاليف التشغيلية المباشرة",1,40,Dr,Active
+510013,Electricity,الكهرباء,"Direct Operating Costs",PL-040,PL,"Direct Operating Costs","التكاليف التشغيلية المباشرة",1,40,Dr,Active
+510014,"Project Maintenance","صيانة المشروع","Direct Operating Costs",PL-040,PL,"Direct Operating Costs","التكاليف التشغيلية المباشرة",1,40,Dr,Active
+510015,"System Operation","تشغيل الأنظمة","Direct Operating Costs",PL-040,PL,"Direct Operating Costs","التكاليف التشغيلية المباشرة",1,40,Dr,Active
+510016,"Cleaning Services","خدمات النظافة","Direct Operating Costs",PL-040,PL,"Direct Operating Costs","التكاليف التشغيلية المباشرة",1,40,Dr,Active
+510017,"Direct Consumables","مستهلكات مباشرة","Direct Operating Costs",PL-040,PL,"Direct Operating Costs","التكاليف التشغيلية المباشرة",1,40,Dr,Active
+510019,"Other Direct Operating Costs","تكاليف تشغيلية مباشرة أخرى","Direct Operating Costs",PL-040,PL,"Direct Operating Costs","التكاليف التشغيلية المباشرة",1,40,Dr,Active
+610001,"Administrative Salaries","رواتب إدارية","Administrative Expenses",PL-060,PL,"Administrative Expenses","المصروفات الإدارية",1,60,Dr,Active
+610002,"Wages & Temporary Labor","أجور وعمالة مؤقتة","Administrative Expenses",PL-060,PL,"Administrative Expenses","المصروفات الإدارية",1,60,Dr,Active
+610003,"Professional Services","خدمات مهنية","Administrative Expenses",PL-060,PL,"Administrative Expenses","المصروفات الإدارية",1,60,Dr,Active
+610004,"Fuel & Transportation","وقود ونقل","Administrative Expenses",PL-060,PL,"Administrative Expenses","المصروفات الإدارية",1,60,Dr,Active
+610005,Communications,اتصالات,"Administrative Expenses",PL-060,PL,"Administrative Expenses","المصروفات الإدارية",1,60,Dr,Active
+610006,"Office Expenses","مصروفات مكتبية","Administrative Expenses",PL-060,PL,"Administrative Expenses","المصروفات الإدارية",1,60,Dr,Active
+610007,"Public Relations","علاقات عامة","Administrative Expenses",PL-060,PL,"Administrative Expenses","المصروفات الإدارية",1,60,Dr,Active
+610008,"Facilitation Expenses","مصروفات تسهيلية","Administrative Expenses",PL-060,PL,"Administrative Expenses","المصروفات الإدارية",1,60,Dr,Active
+610009,Hospitality,ضيافة,"Administrative Expenses",PL-060,PL,"Administrative Expenses","المصروفات الإدارية",1,60,Dr,Active
+610010,"Legal Services","خدمات قانونية","Administrative Expenses",PL-060,PL,"Administrative Expenses","المصروفات الإدارية",1,60,Dr,Active
+610011,"Audit & Accounting","تدقيق ومحاسبة","Administrative Expenses",PL-060,PL,"Administrative Expenses","المصروفات الإدارية",1,60,Dr,Active
+610012,"Bank Charges","مصاريف مصرفية","Administrative Expenses",PL-060,PL,"Administrative Expenses","المصروفات الإدارية",1,60,Dr,Active
+610013,Rent,إيجار,"Administrative Expenses",PL-060,PL,"Administrative Expenses","المصروفات الإدارية",1,60,Dr,Active
+610014,Travel,سفر,"Administrative Expenses",PL-060,PL,"Administrative Expenses","المصروفات الإدارية",1,60,Dr,Active
+610015,"Government Fees","رسوم حكومية","Administrative Expenses",PL-060,PL,"Administrative Expenses","المصروفات الإدارية",1,60,Dr,Active
+610016,"Depreciation Expense – Retained Assets","مصروف إهلاك الأصول المحتفظ بها","Administrative Expenses",PL-070,PL,"Depreciation & Amortization","الإهلاك والإطفاء",1,70,Dr,Active
+610017,"Amortization Expense – Concession Rights","مصروف إطفاء حقوق الامتياز","Administrative Expenses",PL-070,PL,"Depreciation & Amortization","الإهلاك والإطفاء",1,70,Dr,Active
+610019,"Approved Administrative & Legle Expenses","مصروفات إدارية قانونية","Administrative Expenses",PL-060,PL,"Administrative Expenses","المصروفات الإدارية",1,60,Dr,Active

@@ -14,15 +14,13 @@ use Filament\Support\Icons\Heroicon;
  */
 enum NavigationGroup: string implements HasIcon, HasLabel
 {
-    case Ledger = 'ledger';
-    case Receivables = 'receivables';
-    case Payables = 'payables';
+    case Journal = 'journal';
+    case Funding = 'funding';
     case Cash = 'cash';
-    case Assets = 'assets';
-    case Inventory = 'inventory';
-    case Payroll = 'payroll';
+    case Controls = 'controls';
     case Reporting = 'reporting';
-    case Budgeting = 'budgeting';
+    case Closing = 'closing';
+    case MasterData = 'master_data';
     case Setup = 'setup';
     case Administration = 'administration';
 
@@ -34,15 +32,13 @@ enum NavigationGroup: string implements HasIcon, HasLabel
     public function getIcon(): Heroicon
     {
         return match ($this) {
-            self::Ledger => Heroicon::OutlinedBookOpen,
-            self::Receivables => Heroicon::OutlinedArrowDownTray,
-            self::Payables => Heroicon::OutlinedArrowUpTray,
+            self::Journal => Heroicon::OutlinedBookOpen,
+            self::Funding => Heroicon::OutlinedArrowsRightLeft,
             self::Cash => Heroicon::OutlinedBanknotes,
-            self::Assets => Heroicon::OutlinedBuildingOffice2,
-            self::Inventory => Heroicon::OutlinedCube,
-            self::Payroll => Heroicon::OutlinedUsers,
+            self::Controls => Heroicon::OutlinedShieldExclamation,
             self::Reporting => Heroicon::OutlinedChartBar,
-            self::Budgeting => Heroicon::OutlinedCalculator,
+            self::Closing => Heroicon::OutlinedLockClosed,
+            self::MasterData => Heroicon::OutlinedRectangleStack,
             self::Setup => Heroicon::OutlinedCog6Tooth,
             self::Administration => Heroicon::OutlinedShieldCheck,
         };

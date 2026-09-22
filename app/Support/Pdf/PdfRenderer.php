@@ -22,23 +22,23 @@ final class PdfRenderer
     private const LATIN_FONT = 'dejavusans';
 
     /** @param  array<string, mixed>  $data */
-    public function render(string $view, array $data = [], ?string $locale = null): string
+    public function render(string $view, array $data = [], ?string $locale = null, string $orientation = 'P'): string
     {
         $locale ??= app()->getLocale();
         $isRtl = $locale === 'ar';
 
         $html = view($view, [...$data, 'locale' => $locale, 'isRtl' => $isRtl])->render();
 
-        return $this->renderHtml($html, $isRtl);
+        return $this->renderHtml($html, $isRtl, $orientation);
     }
 
     /** @throws MpdfException */
-    public function renderHtml(string $html, bool $isRtl = false): string
+    public function renderHtml(string $html, bool $isRtl = false, string $orientation = 'P'): string
     {
         $mpdf = new Mpdf([
             'mode' => 'utf-8',
-            'format' => 'A4',
-            'orientation' => 'P',
+            'format' => $orientation === 'L' ? 'A4-L' : 'A4',
+            'orientation' => $orientation,
             'margin_left' => 12,
             'margin_right' => 12,
             'margin_top' => 16,
@@ -56,7 +56,7 @@ final class PdfRenderer
             $mpdf->SetDirectionality('rtl');
         }
 
-        $mpdf->SetCreator('Al-Idan Accounting System');
+        $mpdf->SetCreator('SHH-01 Financial & Accounting System');
         $mpdf->WriteHTML($html);
 
         return (string) $mpdf->Output('', Destination::STRING_RETURN);

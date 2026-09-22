@@ -19,20 +19,22 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 /**
+ * @property string|null $username
  * @property string|null $name_ar
  * @property string $locale
+ * @property string $numeral_system
  * @property bool $is_active
  * @property bool $is_service_account
- * @property int|null $default_entity_id
- * @property int|null $default_cost_centre_id
+ * @property int $failed_attempts
+ * @property CarbonImmutable|null $locked_until
  * @property CarbonImmutable|null $last_login_at
  * @property CarbonImmutable|null $mfa_confirmed_at
  * @property string|null $app_authentication_secret
  * @property array<int, string>|null $app_authentication_recovery_codes
  */
 #[Fillable([
-    'name', 'name_ar', 'email', 'password', 'locale', 'is_active',
-    'is_service_account', 'default_entity_id', 'default_cost_centre_id', 'job_title',
+    'name', 'username', 'name_ar', 'email', 'password', 'locale', 'numeral_system', 'is_active',
+    'is_service_account', 'job_title',
 ])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements FilamentUser, HasAppAuthentication, HasAppAuthenticationRecovery, HasName
@@ -47,6 +49,8 @@ class User extends Authenticatable implements FilamentUser, HasAppAuthentication
             'password' => 'hashed',
             'is_active' => 'boolean',
             'is_service_account' => 'boolean',
+            'failed_attempts' => 'integer',
+            'locked_until' => 'datetime',
             'last_login_at' => 'datetime',
             'mfa_confirmed_at' => 'datetime',
             'app_authentication_secret' => 'encrypted',
@@ -62,8 +66,15 @@ class User extends Authenticatable implements FilamentUser, HasAppAuthentication
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->is_active
+            && ! $this->isLocked()
             && ! $this->is_service_account
             && $this->roles()->exists();
+    }
+
+    /** Locked after five failed sign-ins (Document B §8). */
+    public function isLocked(): bool
+    {
+        return $this->locked_until !== null && $this->locked_until->isFuture();
     }
 
     public function getFilamentName(): string

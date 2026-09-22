@@ -49,6 +49,19 @@ return [
             'report' => false,
         ],
 
+        // Accounting evidence: vouchers, invoices, bank statements. Never public --
+        // `attachments` rows are immutable at the database level and the bytes they
+        // point at must outlive every UI that shows them. `throw` is on: a silently
+        // failed evidence write would break the audit trail without telling anyone.
+        'documents' => [
+            'driver' => env('DOCUMENTS_DISK_DRIVER', 'local'),
+            'root' => storage_path('app/documents'),
+            'visibility' => 'private',
+            'serve' => false,
+            'throw' => true,
+            'report' => true,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

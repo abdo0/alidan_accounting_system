@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 return [
 
+    'locked' => 'The account was locked after five failed sign-in attempts.',
+    'mfa_required' => 'Your role requires two-factor authentication. Set it up here before you can continue.',
+
     /*
     |--------------------------------------------------------------------------
     | Authentication Language Lines

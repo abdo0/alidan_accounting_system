@@ -1,0 +1,31 @@
+"Filter ID","Filter (EN)","المرشّح (عربي)",Type,"Applies to","Bound field"
+F-01,"From Date","من تاريخ",date,"All transactional reports",journal_headers.txn_date
+F-02,"To Date","إلى تاريخ",date,"All transactional reports",journal_headers.txn_date
+F-03,"Fiscal Year","السنة المالية",lookup,"All reports",accounting_periods.fiscal_year_id
+F-04,Period,الفترة,lookup,"All reports",journal_headers.period_id
+F-05,Entity,الكيان,lookup,"All reports",journal_headers.company_id
+F-06,Project,المشروع,multi-select,"All reports",journal_lines.project_id
+F-07,"Cost Center","مركز التكلفة",multi-select,"All reports except Cash Position",journal_lines.cost_center_id
+F-08,"Responsibility Center","مركز المسؤولية",multi-select,"Advances, journal, trial balance, project cost",journal_lines.resp_center_id
+F-09,Account,الحساب,multi-select,"Trial balance, ledger, journal",journal_lines.account_id
+F-10,"Account Group","مجموعة الحسابات",multi-select,"Trial balance, financial statements",accounts.parent_id
+F-11,"Funding Source","مصدر التمويل",multi-select,"Funding, journal, chain control",journal_lines.funding_source_id
+F-12,"Funding Batch","دفعة التمويل",lookup,"Funding, chain control, duplicate register",journal_lines.funding_batch_id
+F-13,"Funding Category","تصنيف التمويل",multi-select,"Funding, utilisation, journal",journal_lines.funding_category_id
+F-14,"Chain Step","خطوة السلسلة",multi-select,"Chain control, journal",journal_lines.chain_step_id
+F-15,Shareholder,المساهم,multi-select,"Funding reports, equity",journal_lines.counterparty_id
+F-16,"Contractor / Supplier","المقاول / المورد",multi-select,"Contractor subledger, journal",journal_lines.counterparty_id
+F-17,"Advance Holder","صاحب العهدة",multi-select,"Advances, journal, chain control",journal_lines.advance_holder_id
+F-18,Contract,العقد,lookup,"Contractor subledger, CIP, journal",journal_lines.contract_id
+F-19,"Work Package","حزمة العمل",lookup,"Contractor subledger, CIP",journal_lines.work_package_id
+F-20,"CAPEX / OPEX","رأسمالي / تشغيلي",select,"Project cost, CIP, P&L analysis",journal_lines.capex_opex
+F-21,"Asset Class","تصنيف الأصل",multi-select,"CIP register, fixed assets",journal_lines.asset_class
+F-22,"Handover Requirement","متطلب التسليم",select,"CIP register",journal_lines.handover_req
+F-23,"Transaction Status","حالة الحركة",multi-select,"Journal, unposted register",journal_headers.status
+F-24,"Document Status","حالة المستند",multi-select,"Journal, exceptions",journal_headers.doc_status
+F-25,"Reconciliation Status","حالة المطابقة",multi-select,"Journal, exceptions, open differences",journal_lines.recon_status
+F-26,"Duplicate Flag","تأشير الازدواجية",multi-select,"Duplicate register, journal",duplicate_flags.flag_type
+F-27,"Date Status","حالة التاريخ",multi-select,"Journal, exceptions, migration",journal_headers.date_status
+F-28,"Source Presence","مصدر الحركة",multi-select,"Journal, reconciliation, migration",journal_headers.source_presence
+F-29,"Cash / Bank Account","الحساب النقدي / المصرفي",multi-select,"Cash position, journal",journal_lines.cash_account_id
+F-30,"Comparative Basis","أساس المقارنة",select,"Financial statements, comparative P&L (current month / prior month / YTD / prior-year YTD)","report parameter"

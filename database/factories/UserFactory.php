@@ -32,6 +32,15 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            // Columns added by extend_users_table. The database defaults them, but a
+            // freshly created model does not hold what it did not insert, and
+            // Model::shouldBeStrict() makes reading one an exception rather than null.
+            'locale' => 'en',
+            'numeral_system' => 'latn',
+            'failed_attempts' => 0,
+            'locked_until' => null,
+            'is_active' => true,
+            'is_service_account' => false,
         ];
     }
 

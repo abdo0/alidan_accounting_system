@@ -1,0 +1,86 @@
+"Dimension / Field",Code,Value,Arabic,"Source of the value","Entries in the ledger"
+"Funding Category",FC-01,"PRJ-01 Direct Project Funding","تمويل مباشر – اليوسفية","File 1 COA master list",754
+"Funding Category",FC-02,"PRJ-02 Share Acquisition","استحواذ حصة الراشدية","File 1 COA master list",20
+"Funding Category",FC-03,"PRJ-03 – 100 Dunum Development","تطوير الـ100 دونم","File 1 COA master list",16
+"Funding Category",FC-04,"Personal Receivable","ذمم شخصية","File 1 COA master list",6
+"Funding Category",FC-05,"Project Advance – Pending Settlement","سلفة مشروع قيد التسوية","File 1 COA master list",155
+"Funding Category",FC-06,"Direct Supplier / Contractor Payment","دفع مباشر لمورد أو مقاول","File 1 COA master list",232
+"Funding Category",FC-07,"Corporate / Non-Project","إداري غير مشروعي","File 1 COA master list",0
+"Funding Category",FC-08,"Recovery / Cash Returned","استرداد ونقد معاد","File 1 COA master list",1
+"Funding Category",FC-09,"Pending Classification","قيد التصنيف","File 1 COA master list",1
+"Funding Category",FC-10,"Direct Funding – Mohammed Al-Shammari","تمويل مباشر – محمد الشمري","Journal only — NOT in the COA master list",6
+"Funding Category",FC-11,"Recycled Contractor Recovery","استرداد من المقاول أعيد استخدامه","Journal only — NOT in the COA master list",2
+"Funding Chain Step",CS-1F,"1 – FUNDING / تمويل من المساهم",,"File 1 Journal Ledger column Z",222
+"Funding Chain Step",CS-1FA,"1 – FUNDING FOR PRJ-02 ACQUISITION / تمويل الاستحواذ على حصة الراشدية",,"File 1 Journal Ledger column Z",6
+"Funding Chain Step",CS-1DB,"1 – DIRECT SHAREHOLDER FUNDING TO BENEFICIARY / تمويل مباشر من المساهم إلى المستفيد",,"File 1 Journal Ledger column Z",4
+"Funding Chain Step",CS-2AT,"2 – ADVANCE TRANSFER / تحويل إلى سلفة",,"File 1 Journal Ledger column Z",92
+"Funding Chain Step",CS-2DP,"2 – DIRECT PAYMENT / دفع مباشر من الخزنة",,"File 1 Journal Ledger column Z",130
+"Funding Chain Step",CS-2SA,"2b – SUB-ADVANCE FROM CUSTODY / سلفة فرعية من العهدة",,"File 1 Journal Ledger column Z",8
+"Funding Chain Step",CS-2RR,"2 – PAYMENT FUNDED BY RECYCLED RECOVERY / دفع ممول من استرداد معاد استخدامه",,"File 1 Journal Ledger column Z",1
+"Funding Chain Step",CS-3S,"3 – SETTLEMENT / تسوية سلفة على حساب المصروف",,"File 1 Journal Ledger column Z",713
+"Funding Chain Step",CS-3SA,"3 – SETTLEMENT AGAINST PRJ-02 ACQUISITION / تسوية مقابل الاستحواذ على حصة الراشدية",,"File 1 Journal Ledger column Z",10
+"Funding Chain Step",CS-XRC,"X – RECLASSIFICATION TO PERSONAL RECEIVABLE / إعادة تصنيف إلى ذمم شخصية",,"File 1 Journal Ledger column Z",4
+"Funding Chain Step",CS-XSS,"X – SHORTFALL TO SUSPENSE / عجز إلى الحساب الوسيط",,"File 1 Journal Ledger column Z",1
+"Funding Chain Step",CS-R,"R – RECOVERY / استرداد",,"File 1 Journal Ledger column Z",2
+"Source Presence",,AMER,,"File 1 COA master list",707
+"Source Presence",,"NEW VERSION",,"File 1 COA master list",67
+"Source Presence",,"AMER + NEW VERSION",,"File 1 COA master list",88
+"Source Presence",,"NOT FOUND",,"File 1 COA master list",0
+"Source Presence",,"DIRECT FUND",,"File 1 COA master list",144
+"Source Presence",,"DIRECT FUND + AMER",,"File 1 COA master list",76
+"Source Presence",,"DIRECT FUND + NEW VERSION OTHER SHEET",,"File 1 COA master list",0
+"Source Presence",,"MULTIPLE SOURCES",,"File 1 COA master list",0
+"Source Presence",,"2026 قيود",,"Journal only — NOT in the COA master list",50
+"Source Presence",,"كشف حساب المبالغ الواصلة والمستلمة - تحالف شركة دار العطاء و تاج المروة",,"Journal only — NOT in the COA master list",46
+"Source Presence",,"MANAGEMENT DECISION",,"Journal only — NOT in the COA master list",11
+"Source Presence",,"DIRECT FUNDING LEDGER",,"Journal only — NOT in the COA master list",6
+"Reconciliation Status",,"MATCHED / مطابق",,"File 1 COA master list",
+"Reconciliation Status",,"MATCHED BOTH SOURCES / مطابق في المصدرين",,"File 1 COA master list",
+"Reconciliation Status",,"AMOUNT DIFFERENCE / فرق مبلغ",,"File 1 COA master list",
+"Reconciliation Status",,"DATE DIFFERENCE / فرق تاريخ",,"File 1 COA master list",
+"Reconciliation Status",,"DESCRIPTION DIFFERENCE / فرق بيان",,"File 1 COA master list",
+"Reconciliation Status",,"DUPLICATE / مكرر",,"File 1 COA master list",
+"Reconciliation Status",,"MISSING FROM JOURNAL / غير مدخل",,"File 1 COA master list",
+"Reconciliation Status",,"JOURNAL ONLY / موجود في القيود فقط",,"File 1 COA master list",
+"Reconciliation Status",,"REQUIRES CORRECTION / يحتاج تصحيح",,"File 1 COA master list",
+"Duplicate Review",,"NO DUPLICATE / لا يوجد ازدواج",,"File 1 COA master list",
+"Duplicate Review",,"POSSIBLE AMER DUPLICATE / ازدواج محتمل مع عامر",,"File 1 COA master list",
+"Duplicate Review",,"CONFIRMED AMER MATCH / مطابقة مؤكدة مع عامر",,"File 1 COA master list",
+"Duplicate Review",,"REQUIRES MANUAL REVIEW / يتطلب مراجعة يدوية",,"File 1 COA master list",
+"Date Comparison",,"DATE MATCH / تاريخ مطابق",,"File 1 COA master list",
+"Date Comparison",,"DATE DIFFERENCE / اختلاف تاريخ",,"File 1 COA master list",
+"Date Comparison",,"SOURCE DATE MISSING / تاريخ المصدر غير متوفر",,"File 1 COA master list",
+"Date Comparison",,"AMER DATE MISSING / تاريخ عامر غير متوفر",,"File 1 COA master list",
+"Date Comparison",,"NOT APPLICABLE / لا ينطبق",,"File 1 COA master list",
+"Date Status",,OK,,"File 1 Journal Ledger column N",884
+"Date Status",,"⚠ NO DATE IN SOURCE — not fabricated",,"File 1 Journal Ledger column N",211
+"Date Status",,"Missing Date / التاريخ غير متوفر",,"File 1 Journal Ledger column N",73
+"Date Status",,"Inconsistent Date / تاريخ غير متسق",,"File 1 Journal Ledger column N",27
+"CAPEX / OPEX",,CAPEX,,"File 2 _lists",
+"CAPEX / OPEX",,OPEX,,"File 2 _lists",
+"CAPEX / OPEX",,n/a,,"File 2 _lists",
+"Asset Class",,"Concession CIP",,"File 2 _lists",
+"Asset Class",,"Concession Right",,"File 2 _lists",
+"Asset Class",,"Fixed Asset (Retained)",,"File 2 _lists",
+"Asset Class",,Advance,,"File 2 _lists",
+"Asset Class",,Expense,,"File 2 _lists",
+"Asset Class",,Payable,,"File 2 _lists",
+"Asset Class",,Receivable,,"File 2 _lists",
+"Asset Class",,n/a,,"File 2 _lists",
+"Handover Requirement",,"Government-Owned / Titled",,"File 2 _lists / Policy 6",
+"Handover Requirement",,"Handover Required at Expiry",,"File 2 _lists / Policy 6",
+"Handover Requirement",,"Retained by SHH",,"File 2 _lists / Policy 6",
+"Handover Requirement",,"Classification Pending",,"File 2 _lists / Policy 6",
+"Document Status",,Complete,,"File 2 _lists",
+"Document Status",,Partial,,"File 2 _lists",
+"Document Status",,Missing,,"File 2 _lists",
+"Journal Status",,Draft,,"Workflow definition",
+"Journal Status",,Submitted,,"Workflow definition",
+"Journal Status",,Reviewed,,"Workflow definition",
+"Journal Status",,Approved,,"Workflow definition",
+"Journal Status",,Posted,,"Workflow definition",
+"Journal Status",,Reversed,,"Workflow definition",
+"Period Status",,Open,,"Period management definition",
+"Period Status",,"Soft Close",,"Period management definition",
+"Period Status",,"Final Close",,"Period management definition",
+"Period Status",,Locked,,"Period management definition",
