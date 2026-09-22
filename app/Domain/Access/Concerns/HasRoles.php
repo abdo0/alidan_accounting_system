@@ -137,6 +137,10 @@ trait HasRoles
     /** Whether this user has actually enrolled the second factor their roles demand. */
     public function hasSatisfiedMfaRequirement(): bool
     {
-        return ! $this->requiresMfa() || $this->mfa_confirmed_at !== null;
+        if (! $this->requiresMfa()) {
+            return true;
+        }
+
+        return $this->mfa_confirmed_at !== null || filled($this->getAppAuthenticationSecret());
     }
 }

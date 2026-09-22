@@ -7,6 +7,7 @@ namespace App\Http\Middleware;
 use App\Models\User;
 use Closure;
 use Filament\Facades\Filament;
+use Filament\Notifications\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
@@ -24,13 +25,17 @@ class RequireMfaForSensitiveRoles
 {
     /**
      * Routes that must stay reachable, or the redirect has nowhere to land: the
-     * profile page where enrolment happens, and the way out.
+     * profile page where enrolment happens, the Livewire endpoint that page posts
+     * to, and the way out.
      */
     private const ALLOWED = [
         'filament.admin.auth.profile',
         'filament.admin.auth.logout',
         'filament.admin.auth.login',
         'locale.switch',
+        'livewire.update',
+        'livewire.upload-file',
+        'livewire.preview-file',
     ];
 
     public function handle(Request $request, Closure $next): SymfonyResponse
@@ -53,8 +58,12 @@ class RequireMfaForSensitiveRoles
             );
         }
 
-        return redirect()
-            ->to(Filament::getPanel('admin')->getProfileUrl())
-            ->with('mfa_required', __('auth.mfa_required'));
+        Notification::make()
+            ->title(__('auth.mfa_required'))
+            ->warning()
+            ->persistent()
+            ->send();
+
+        return redirect()->to(Filament::getPanel('admin')->getProfileUrl());
     }
 }

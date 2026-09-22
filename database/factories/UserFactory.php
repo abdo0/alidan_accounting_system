@@ -41,6 +41,9 @@ class UserFactory extends Factory
             'locked_until' => null,
             'is_active' => true,
             'is_service_account' => false,
+            'mfa_confirmed_at' => null,
+            'app_authentication_secret' => null,
+            'app_authentication_recovery_codes' => null,
         ];
     }
 

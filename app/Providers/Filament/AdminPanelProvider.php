@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Providers\Filament;
 
 use App\Filament\Enums\NavigationGroup;
+use App\Filament\Pages\Auth\EditProfile;
 use App\Http\Middleware\EnforceAbsoluteSessionTimeout;
 use App\Http\Middleware\RequireMfaForSensitiveRoles;
 use App\Http\Middleware\SetDatabaseContext;
@@ -35,7 +36,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->profile(isSimple: false)
+            ->profile(EditProfile::class, isSimple: false)
             // Required for any role that can post or approve (docs/02 §2.6). Enforced
             // per-role rather than globally so a read-only viewer is not burdened.
             ->multiFactorAuthentication(AppAuthentication::make()->recoverable())

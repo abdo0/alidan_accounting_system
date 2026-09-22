@@ -86,6 +86,10 @@ class User extends Authenticatable implements FilamentUser, HasAppAuthentication
 
     public function getAppAuthenticationSecret(): ?string
     {
+        if (! array_key_exists('app_authentication_secret', $this->getAttributes())) {
+            return null;
+        }
+
         return $this->app_authentication_secret;
     }
 
